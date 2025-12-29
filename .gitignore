@@ -17,3 +17,6 @@ venv/
 
 # PDF outputs
 *.pdf
+
+# Internal documents
+*-update-*.md

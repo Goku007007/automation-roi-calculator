@@ -13,7 +13,6 @@ An open source tool that helps organizations calculate the financial return on i
 
 - **Backend**: Python, FastAPI
 - **Data Validation**: Pydantic
-- **Database**: SQLite
 - **Frontend**: HTML, CSS, JavaScript
 
 ## Installation
@@ -33,14 +32,18 @@ pip install -r backend/requirements.txt
 
 ## Usage
 
+**Start the backend:**
 ```bash
 cd backend
 python main.py
 ```
 
+**Open the frontend:**
+Open `frontend/index.html` in your browser.
+
 API available at `http://localhost:8000`
 
-Interactive docs at `http://localhost:8000/docs`
+Interactive API docs at `http://localhost:8000/docs`
 
 ## Documentation
 

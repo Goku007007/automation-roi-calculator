@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation ROI Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts: Merriweather for headings, Inter for body -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header>
+            <h1>Automation ROI Calculator</h1>
+            <p>Quantify the value of your automation ideas</p>
+        </header>
+
+        <main>
+            <!-- Input Form Section -->
+            <section id="input-section">
+                <form id="roi-form">
+
+                    <!-- Process Identification -->
+                    <div class="form-group">
+                        <label for="process_name">Process Name</label>
+                        <input type="text" id="process_name" name="process_name" placeholder="e.g. Invoice Processing"
+                            required>
+                    </div>
+
+                    <!-- Frequency: How often the process runs -->
+                    <div class="form-group">
+                        <label for="frequency">How often is this process performed?</label>
+                        <select id="frequency" name="frequency" required>
+                            <option value="">Select frequency</option>
+                            <option value="every_minute">Every Minute</option>
+                            <option value="hourly">Hourly</option>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="biweekly">Biweekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="quarterly">Quarterly</option>
+                        </select>
+                    </div>
+
+                    <!-- Volume: How many times per period -->
+                    <div class="form-group">
+                        <label for="runs_per_period">How many times per period?</label>
+                        <input type="number" id="runs_per_period" name="runs_per_period" min="1" max="1000"
+                            placeholder="e.g. 20" required>
+                    </div>
+
+                    <!-- Time: Hours spent per execution -->
+                    <div class="form-group">
+                        <label for="hours_per_run">Hours per run</label>
+                        <input type="number" id="hours_per_run" name="hours_per_run" min="0.1" max="40" step="0.1"
+                            placeholder="e.g. 0.5" required>
+                    </div>
+
+                    <!-- Staff: Number of people involved -->
+                    <div class="form-group">
+                        <label for="staff_count">Number of staff involved</label>
+                        <input type="number" id="staff_count" name="staff_count" min="1" max="100" placeholder="e.g. 3"
+                            required>
+                    </div>
+
+                    <!-- Cost: Hourly rate per person -->
+                    <div class="form-group">
+                        <label for="hourly_rate">Hourly rate ($)</label>
+                        <input type="number" id="hourly_rate" name="hourly_rate" min="15" max="500"
+                            placeholder="e.g. 35" required>
+                    </div>
+
+                    <!-- Investment: One-time automation cost -->
+                    <div class="form-group">
+                        <label for="implementation_cost">Automation implementation cost ($)</label>
+                        <input type="number" id="implementation_cost" name="implementation_cost" min="1000" max="500000"
+                            placeholder="e.g. 25000" required>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="calculate-btn">Calculate ROI</button>
+                </form>
+            </section>
+
+            <!-- Results Section: Hidden until calculation completes -->
+            <section id="results-section" class="hidden">
+                <h2>Results</h2>
+                <div id="results-content">
+                    <!-- JavaScript will populate this with ROI data -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Load JavaScript after HTML is parsed -->
+    <script src="app.js"></script>
+</body>
+
+</html>
