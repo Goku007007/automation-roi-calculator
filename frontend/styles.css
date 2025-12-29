@@ -196,3 +196,13 @@ button:hover {
     border-radius: 8px;
     text-align: center;
 }
+
+/* Download Button in Results */
+.result-card button {
+    margin-top: 1.5rem;
+    background-color: #10b981;
+}
+
+.result-card button:hover {
+    background-color: #059669;
+}

@@ -76,7 +76,47 @@ function displayResults(data) {
                 </div>
             </div>
             <p class="recommendation">${data.recommendation}</p>
+            <button onclick="downloadPDF()">Download PDF</button>
         </div>
     `;
     resultsSection.classList.remove("hidden");
+}
+
+// Download PDF report
+async function downloadPDF() {
+    const formData = {
+        process_name: document.getElementById("process_name").value,
+        frequency: document.getElementById("frequency").value,
+        runs_per_period: parseInt(document.getElementById("runs_per_period").value),
+        hours_per_run: parseFloat(document.getElementById("hours_per_run").value),
+        staff_count: parseInt(document.getElementById("staff_count").value),
+        hourly_rate: parseFloat(document.getElementById("hourly_rate").value),
+        implementation_cost: parseFloat(document.getElementById("implementation_cost").value)
+    };
+
+    try {
+        const response = await fetch(`${API_URL}/generate-pdf`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+            throw new Error("PDF generation failed");
+        }
+
+        // Download the PDF
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${formData.process_name.replace(/ /g, "_")}_ROI_Report.pdf`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+        alert("Error generating PDF: " + error.message);
+    }
 }

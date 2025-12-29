@@ -8,6 +8,7 @@ An open source tool that helps organizations calculate the financial return on i
 - Determine payback period for automation investments
 - Generate priority recommendations based on ROI metrics
 - Transparent calculations with user-provided projections
+- Download PDF reports for sharing
 
 ## Tech Stack
 
