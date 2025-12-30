@@ -3,13 +3,14 @@ main.py - FastAPI Application
 Web server that exposes the ROI calculator as an API.
 """
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.responses import Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from models import ROIInput, ROIOutput
 from calculator import calculate_roi
 from pdf_generator import generate_pdf_report
+from auth import create_access_token, verify_token
 
 app = FastAPI(
     title="Automation ROI Calculator",
@@ -25,14 +26,40 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+# =============================================================================
+# PUBLIC ENDPOINTS (No authentication required)
+# =============================================================================
+
 @app.get("/health")
 def health_check():
+    """Check if the server is running."""
     return {"status": "healthy"}
 
 
+@app.get("/token")
+def get_token():
+    """
+    Get an access token for API access.
+    
+    This token is required for /calculate and /generate-pdf endpoints.
+    Token expires in 60 minutes.
+    """
+    token = create_access_token()
+    return {"access_token": token, "token_type": "bearer"}
+
+
+# =============================================================================
+# PROTECTED ENDPOINTS (Authentication required)
+# =============================================================================
+
 @app.post("/calculate")
-def calculate(inputs: ROIInput):
-    """Calculate automation ROI based on provided inputs"""
+def calculate(inputs: ROIInput, authenticated: bool = Depends(verify_token)):
+    """
+    Calculate automation ROI based on provided inputs.
+    
+    Requires: Bearer token in Authorization header
+    """
     try:
         result = calculate_roi(inputs)
         return result
@@ -41,8 +68,12 @@ def calculate(inputs: ROIInput):
 
 
 @app.post("/generate-pdf")
-def generate_pdf(inputs: ROIInput):
-    """Generate PDF report from ROI calculation results"""
+def generate_pdf(inputs: ROIInput, authenticated: bool = Depends(verify_token)):
+    """
+    Generate PDF report from ROI calculation results.
+    
+    Requires: Bearer token in Authorization header
+    """
     try:
         result = calculate_roi(inputs)
         pdf_bytes = generate_pdf_report(result)
