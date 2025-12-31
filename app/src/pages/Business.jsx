@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ChartBarIcon, WrenchIcon, RocketIcon } from '../components/ui/Icons';
 import styles from './Business.module.css';
 
 export default function Business() {
@@ -40,7 +41,7 @@ export default function Business() {
         <div className={styles.page}>
             <div className={styles.container}>
                 <div className={styles.header}>
-                    <h1>For Business</h1>
+                    <h1>Need Enterprise Help?</h1>
                     <p className={styles.subtitle}>
                         Need custom automation solutions? Let's discuss how we can help transform your operations.
                     </p>
@@ -49,17 +50,17 @@ export default function Business() {
                 {/* Value Props */}
                 <div className={styles.valueProps}>
                     <div className={styles.prop}>
-                        <span className={styles.icon}>📊</span>
+                        <span className={styles.icon}><ChartBarIcon size={24} /></span>
                         <h3>Data-Driven</h3>
                         <p>We calculate ROI before building, ensuring every automation delivers value.</p>
                     </div>
                     <div className={styles.prop}>
-                        <span className={styles.icon}>🔧</span>
+                        <span className={styles.icon}><WrenchIcon size={24} /></span>
                         <h3>Custom Solutions</h3>
                         <p>Tailored automations built for your specific workflows and systems.</p>
                     </div>
                     <div className={styles.prop}>
-                        <span className={styles.icon}>🚀</span>
+                        <span className={styles.icon}><RocketIcon size={24} /></span>
                         <h3>Quick Launch</h3>
                         <p>From assessment to deployment in weeks, not months.</p>
                     </div>
