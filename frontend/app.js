@@ -2,14 +2,15 @@
  * app.js - Frontend JavaScript for Automation ROI Calculator
  * 
  * Handles form submission, API communication, and results display.
- * Uses JWT authentication for API access.
+ * Automatically detects if auth is required and handles tokens accordingly.
  */
 
-// API endpoint
+// API endpoint - change this to your deployed backend URL
 const API_URL = "http://localhost:8007";
 
-// Store the access token
+// Store the access token (only used if auth is required)
 let accessToken = null;
+let authRequired = false;
 
 // Get form and results elements
 const form = document.getElementById("roi-form");
@@ -18,9 +19,26 @@ const resultsContent = document.getElementById("results-content");
 
 
 /**
- * Get an access token from the API
+ * Check if authentication is required
+ */
+async function checkAuthRequired() {
+    try {
+        const response = await fetch(`${API_URL}/health`);
+        const data = await response.json();
+        authRequired = data.auth_required || false;
+    } catch (error) {
+        console.log("Could not check auth status, assuming not required");
+        authRequired = false;
+    }
+}
+
+
+/**
+ * Get an access token from the API (if auth is required)
  */
 async function getAccessToken() {
+    if (!authRequired) return null;
+
     const response = await fetch(`${API_URL}/token`);
     if (!response.ok) {
         throw new Error("Failed to get access token");
@@ -47,49 +65,39 @@ function getFormData() {
 
 
 /**
+ * Build request headers (with auth if required)
+ */
+function getHeaders() {
+    const headers = { "Content-Type": "application/json" };
+    if (authRequired && accessToken) {
+        headers["Authorization"] = `Bearer ${accessToken}`;
+    }
+    return headers;
+}
+
+
+/**
  * Handle form submission
  */
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     try {
-        // Get token if we don't have one
-        if (!accessToken) {
+        // Check if auth is required and get token if needed
+        await checkAuthRequired();
+        if (authRequired && !accessToken) {
             accessToken = await getAccessToken();
         }
 
         // Collect form data
         const formData = getFormData();
 
-        // Send data to backend with auth token
+        // Send data to backend
         const response = await fetch(`${API_URL}/calculate`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${accessToken}`
-            },
+            headers: getHeaders(),
             body: JSON.stringify(formData)
         });
-
-        // If unauthorized, try getting a new token
-        if (response.status === 401) {
-            accessToken = await getAccessToken();
-            // Retry the request
-            const retryResponse = await fetch(`${API_URL}/calculate`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${accessToken}`
-                },
-                body: JSON.stringify(formData)
-            });
-            if (!retryResponse.ok) {
-                throw new Error("Calculation failed");
-            }
-            const result = await retryResponse.json();
-            displayResults(result);
-            return;
-        }
 
         if (!response.ok) {
             throw new Error("Calculation failed");
@@ -151,19 +159,11 @@ function displayResults(data) {
  */
 async function downloadPDF() {
     try {
-        // Get token if we don't have one
-        if (!accessToken) {
-            accessToken = await getAccessToken();
-        }
-
         const formData = getFormData();
 
         const response = await fetch(`${API_URL}/generate-pdf`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${accessToken}`
-            },
+            headers: getHeaders(),
             body: JSON.stringify(formData)
         });
 
@@ -184,3 +184,7 @@ async function downloadPDF() {
         alert("Error generating PDF: " + error.message);
     }
 }
+
+
+// Check auth status on page load
+checkAuthRequired();
