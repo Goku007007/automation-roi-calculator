@@ -2,6 +2,8 @@ import { useState } from 'react';
 import CalculatorForm from '../components/calculator/CalculatorForm';
 import Results from '../components/calculator/Results';
 import ProjectList from '../components/calculator/ProjectList';
+import ScenarioTabs from '../components/calculator/ScenarioTabs';
+import ScenarioCompare from '../components/calculator/ScenarioCompare';
 import { useProjects } from '../hooks/useProjects';
 import { calculateROI, generatePDF } from '../utils/api';
 import styles from './Calculator.module.css';
@@ -9,12 +11,20 @@ import styles from './Calculator.module.css';
 export default function Calculator() {
     const [results, setResults] = useState(null);
     const [formData, setFormData] = useState(null);
-    const [formKey, setFormKey] = useState(0); // For resetting form
+    const [formKey, setFormKey] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
     const [error, setError] = useState(null);
     const [showProjects, setShowProjects] = useState(false);
     const [loadedInputs, setLoadedInputs] = useState(null);
+
+    // Scenario management
+    const [activeScenario, setActiveScenario] = useState('base');
+    const [scenarios, setScenarios] = useState({
+        base: null,
+        best: null,
+        worst: null,
+    });
 
     const { projects, saveProject, deleteProject, duplicateProject } = useProjects();
 
@@ -26,6 +36,12 @@ export default function Calculator() {
         try {
             const result = await calculateROI(data);
             setResults(result);
+
+            // Save to current scenario
+            setScenarios(prev => ({
+                ...prev,
+                [activeScenario]: { inputs: data, results: result },
+            }));
         } catch (err) {
             setError(err.message || 'Failed to calculate ROI');
             setResults(null);
@@ -34,9 +50,28 @@ export default function Calculator() {
         }
     };
 
+    const handleScenarioChange = (scenarioId) => {
+        setActiveScenario(scenarioId);
+
+        // If scenario has data, load it
+        const scenario = scenarios[scenarioId];
+        if (scenario) {
+            setLoadedInputs(scenario.inputs);
+            setResults(scenario.results);
+            setFormData(scenario.inputs);
+            setFormKey(prev => prev + 1);
+        }
+    };
+
     const handleSaveProject = () => {
         if (!formData || !results) return;
-        saveProject({ inputs: formData, results });
+        saveProject({
+            inputs: formData,
+            results,
+            scenarios: Object.fromEntries(
+                Object.entries(scenarios).filter(([_, v]) => v !== null)
+            ),
+        });
         setShowProjects(true);
     };
 
@@ -44,8 +79,17 @@ export default function Calculator() {
         setLoadedInputs(project.inputs);
         setResults(project.results);
         setFormData(project.inputs);
-        setFormKey(prev => prev + 1); // Force form re-render
+        setFormKey(prev => prev + 1);
         setShowProjects(false);
+
+        // Load scenarios if available
+        if (project.scenarios) {
+            setScenarios({
+                base: project.scenarios.base || null,
+                best: project.scenarios.best || null,
+                worst: project.scenarios.worst || null,
+            });
+        }
     };
 
     const handleDownloadPDF = async () => {
@@ -67,6 +111,15 @@ export default function Calculator() {
         } finally {
             setIsDownloading(false);
         }
+    };
+
+    const handleClearScenarios = () => {
+        setScenarios({ base: null, best: null, worst: null });
+        setResults(null);
+        setFormData(null);
+        setLoadedInputs(null);
+        setFormKey(prev => prev + 1);
+        setActiveScenario('base');
     };
 
     return (
@@ -98,7 +151,7 @@ export default function Calculator() {
                             <div>
                                 <h1>ROI Calculator</h1>
                                 <p className={styles.subtitle}>
-                                    Calculate the return on investment for your automation projects.
+                                    Calculate and compare scenarios for your automation projects.
                                 </p>
                             </div>
                             <button
@@ -108,6 +161,13 @@ export default function Calculator() {
                                 Projects ({projects.length})
                             </button>
                         </div>
+
+                        {/* Scenario Tabs */}
+                        <ScenarioTabs
+                            activeScenario={activeScenario}
+                            scenarios={scenarios}
+                            onScenarioChange={handleScenarioChange}
+                        />
 
                         {error && (
                             <div className={styles.error}>
@@ -130,7 +190,7 @@ export default function Calculator() {
                                     isDownloading={isDownloading}
                                 />
 
-                                {/* Save Project Button */}
+                                {/* Save Actions */}
                                 <div className={styles.saveActions}>
                                     <button
                                         className={styles.saveBtn}
@@ -138,9 +198,20 @@ export default function Calculator() {
                                     >
                                         Save Project
                                     </button>
+                                    {Object.values(scenarios).some(s => s !== null) && (
+                                        <button
+                                            className={styles.clearBtn}
+                                            onClick={handleClearScenarios}
+                                        >
+                                            Clear All
+                                        </button>
+                                    )}
                                 </div>
                             </>
                         )}
+
+                        {/* Scenario Comparison Table */}
+                        <ScenarioCompare scenarios={scenarios} />
                     </div>
                 </main>
             </div>
