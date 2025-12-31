@@ -1,4 +1,4 @@
-// Client-side ROI calculation (fallback when no backend)
+// Client-side ROI calculation (fallback when backend unavailable)
 export function calculateROIClient(data) {
     const frequencyMultipliers = {
         every_minute: 525600,
@@ -55,46 +55,35 @@ export function calculateROIClient(data) {
     };
 }
 
+// Backend URL - Railway in production, localhost in development
 const API_URL = import.meta.env.PROD
-    ? '' // In production, use client-side calculation
+    ? 'https://automation-roi-calculator-production.up.railway.app'
     : 'http://localhost:8007';
 
 export async function calculateROI(data) {
-    // In production (Vercel), use client-side calculation
-    if (import.meta.env.PROD) {
-        // Simulate network delay
-        await new Promise(r => setTimeout(r, 500));
-        return calculateROIClient(data);
+    // Try backend first
+    try {
+        const response = await fetch(`${API_URL}/calculate`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+            return response.json();
+        }
+    } catch (err) {
+        console.log('Backend unavailable, using client-side calculation');
     }
 
-    // In development, use backend
-    const response = await fetch(`${API_URL}/calculate`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-        const error = await response.json().catch(() => ({}));
-        throw new Error(error.detail || 'Calculation failed');
-    }
-
-    return response.json();
+    // Fallback to client-side
+    return calculateROIClient(data);
 }
 
 export async function generatePDF(data) {
-    // In production, PDF generation is not available without backend
-    if (import.meta.env.PROD) {
-        throw new Error('PDF generation requires backend. Coming soon!');
-    }
-
     const response = await fetch(`${API_URL}/generate-pdf`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
     });
 
@@ -106,9 +95,6 @@ export async function generatePDF(data) {
 }
 
 export async function checkHealth() {
-    if (import.meta.env.PROD) {
-        return true; // Client-side mode always "healthy"
-    }
     try {
         const response = await fetch(`${API_URL}/health`);
         return response.ok;
