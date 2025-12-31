@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import Spinner from '../ui/Spinner';
+import Button from '../ui/Button';
+import { DownloadIcon } from '../ui/Icons';
 import styles from './Results.module.css';
 
 function formatCurrency(value) {
@@ -95,13 +97,14 @@ export default function Results({ data, onDownloadPDF, isDownloading }) {
             </div>
 
             {/* Methodology Link */}
-            <button
-                className={styles.methodologyBtn}
+            <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => setShowMethodology(!showMethodology)}
                 type="button"
             >
-                {showMethodology ? 'Hide' : 'How is this calculated?'}
-            </button>
+                {showMethodology ? 'Hide calculation details' : 'How is this calculated?'}
+            </Button>
 
             {showMethodology && (
                 <div className={styles.methodology}>
@@ -122,20 +125,16 @@ export default function Results({ data, onDownloadPDF, isDownloading }) {
 
             {/* Actions */}
             <div className={styles.actions}>
-                <button
-                    className={styles.downloadBtn}
+                <Button
+                    variant="primary"
+                    size="md"
                     onClick={onDownloadPDF}
+                    loading={isDownloading}
                     disabled={isDownloading}
+                    icon={<DownloadIcon size={16} />}
                 >
-                    {isDownloading ? (
-                        <>
-                            <Spinner size="sm" light />
-                            <span>Generating...</span>
-                        </>
-                    ) : (
-                        'Download Report (PDF)'
-                    )}
-                </button>
+                    Download PDF Report
+                </Button>
             </div>
         </div>
     );

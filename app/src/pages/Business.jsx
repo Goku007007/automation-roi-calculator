@@ -157,13 +157,16 @@ export default function Business() {
                                 />
                             </div>
 
-                            <button
+                            <Button
                                 type="submit"
-                                className={styles.submitBtn}
+                                variant="primary"
+                                size="lg"
+                                fullWidth
+                                loading={status === 'submitting'}
                                 disabled={status === 'submitting'}
                             >
-                                {status === 'submitting' ? 'Sending...' : 'Send Message'}
-                            </button>
+                                Send Message
+                            </Button>
                         </form>
                     )}
                 </div>

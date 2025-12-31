@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Spinner from '../ui/Spinner';
+import Button from '../ui/Button';
 import styles from './CalculatorForm.module.css';
 
 const FREQUENCIES = [
@@ -385,16 +386,16 @@ export default function CalculatorForm({ onSubmit, isLoading, initialData }) {
                 </div>
             </details>
 
-            <button type="submit" className={styles.submitBtn} disabled={isLoading}>
-                {isLoading ? (
-                    <>
-                        <Spinner size="sm" light />
-                        <span>Calculating...</span>
-                    </>
-                ) : (
-                    'Show My Results'
-                )}
-            </button>
+            <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                fullWidth
+                loading={isLoading}
+                disabled={isLoading}
+            >
+                Calculate Results
+            </Button>
         </form>
     );
 }
