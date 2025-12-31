@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { ChartBarIcon, WrenchIcon, RocketIcon } from '../components/ui/Icons';
+import { ChartBarIcon, WrenchIcon, RocketIcon, CheckCircleIcon } from '../components/ui/Icons';
+import Button from '../components/ui/Button';
 import styles from './Business.module.css';
 
 export default function Business() {
@@ -41,7 +42,7 @@ export default function Business() {
         <div className={styles.page}>
             <div className={styles.container}>
                 <div className={styles.header}>
-                    <h1>Need Enterprise Help?</h1>
+                    <h1>Enterprise Automation Solutions</h1>
                     <p className={styles.subtitle}>
                         Need custom automation solutions? Let's discuss how we can help transform your operations.
                     </p>
@@ -72,15 +73,17 @@ export default function Business() {
 
                     {status === 'success' ? (
                         <div className={styles.success}>
-                            <span className={styles.successIcon}>✓</span>
+                            <span className={styles.successIcon}>
+                                <CheckCircleIcon size={32} />
+                            </span>
                             <h3>Message Sent!</h3>
-                            <p>We'll get back to you within 24 hours.</p>
-                            <button
-                                className={styles.resetBtn}
+                            <p>Thanks! We'll be in touch within 24 hours.</p>
+                            <Button
+                                variant="secondary"
                                 onClick={() => setStatus(null)}
                             >
-                                Send Another
-                            </button>
+                                Send Another Message
+                            </Button>
                         </div>
                     ) : (
                         <form className={styles.form} onSubmit={handleSubmit}>

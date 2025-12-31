@@ -1,0 +1,111 @@
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    font-weight: 500;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+}
+
+.button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Sizes */
+.sm {
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: 0.8125rem;
+    min-height: 32px;
+}
+
+.md {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: 0.875rem;
+    min-height: 40px;
+}
+
+.lg {
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: 1rem;
+    min-height: 48px;
+}
+
+/* Variants */
+.primary {
+    background: var(--accent);
+    color: white;
+}
+
+.primary:hover:not(:disabled) {
+    background: var(--accent-hover);
+}
+
+.primary:focus-visible {
+    box-shadow: 0 0 0 3px var(--focus-ring-accent, rgba(59, 130, 246, 0.2));
+}
+
+.secondary {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+}
+
+.secondary:hover:not(:disabled) {
+    background: var(--bg-secondary);
+    border-color: var(--text-muted);
+}
+
+.secondary:focus-visible {
+    box-shadow: 0 0 0 3px var(--focus-ring-accent, rgba(59, 130, 246, 0.2));
+}
+
+.ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    padding-left: var(--spacing-sm);
+    padding-right: var(--spacing-sm);
+}
+
+.ghost:hover:not(:disabled) {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.destructive {
+    background: var(--danger);
+    color: white;
+}
+
+.destructive:hover:not(:disabled) {
+    background: #dc2626;
+}
+
+.destructive:focus-visible {
+    box-shadow: 0 0 0 3px var(--focus-ring-danger, rgba(239, 68, 68, 0.2));
+}
+
+/* Full Width */
+.fullWidth {
+    width: 100%;
+}
+
+/* Icon */
+.icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Loading */
+.loading {
+    pointer-events: none;
+}
+
+.loadingText {
+    opacity: 0.8;
+}

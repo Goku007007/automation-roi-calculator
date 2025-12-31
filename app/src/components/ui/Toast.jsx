@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { CheckCircleIcon, XCircleIcon, AlertTriangleIcon, InfoIcon, XIcon } from './Icons';
 import styles from './Toast.module.css';
 
 export default function Toast({ message, type = 'success', duration = 3000, onClose }) {
@@ -13,18 +14,26 @@ export default function Toast({ message, type = 'success', duration = 3000, onCl
         return () => clearTimeout(timer);
     }, [duration, onClose]);
 
-    const icons = {
-        success: '✓',
-        error: '✕',
-        warning: '⚠',
-        info: 'ℹ',
-    };
+    const IconComponent = {
+        success: CheckCircleIcon,
+        error: XCircleIcon,
+        warning: AlertTriangleIcon,
+        info: InfoIcon,
+    }[type] || InfoIcon;
 
     return (
         <div className={`${styles.toast} ${styles[type]} ${visible ? styles.visible : styles.hidden}`}>
-            <span className={styles.icon}>{icons[type]}</span>
+            <span className={styles.icon}>
+                <IconComponent size={16} />
+            </span>
             <span className={styles.message}>{message}</span>
-            <button className={styles.close} onClick={() => { setVisible(false); onClose(); }}>×</button>
+            <button
+                className={styles.close}
+                onClick={() => { setVisible(false); onClose(); }}
+                aria-label="Dismiss notification"
+            >
+                <XIcon size={16} />
+            </button>
         </div>
     );
 }
@@ -32,7 +41,7 @@ export default function Toast({ message, type = 'success', duration = 3000, onCl
 // Toast container for multiple toasts
 export function ToastContainer({ toasts, removeToast }) {
     return (
-        <div className={styles.container}>
+        <div className={styles.container} role="status" aria-live="polite">
             {toasts.map(toast => (
                 <Toast
                     key={toast.id}

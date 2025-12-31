@@ -13,8 +13,11 @@ function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
+        <a href="#main-content" className="skip-to-content">
+          Skip to main content
+        </a>
         <Header />
-        <main>
+        <main id="main-content">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/calculator" element={<Calculator />} />
@@ -30,3 +33,4 @@ function App() {
 }
 
 export default App;
+

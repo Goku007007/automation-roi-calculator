@@ -1,3 +1,6 @@
+import { ChartBarIcon, CopyIcon, TrashIcon } from '../ui/Icons';
+import EmptyState from '../ui/EmptyState';
+import Button from '../ui/Button';
 import styles from './ProjectList.module.css';
 
 function formatDate(dateString) {
@@ -22,14 +25,12 @@ function formatCurrency(value) {
 export default function ProjectList({ projects, onLoad, onDelete, onDuplicate }) {
     if (!projects || projects.length === 0) {
         return (
-            <div className={styles.empty}>
-                <div className={styles.emptyIcon}>📊</div>
-                <h4>No projects yet</h4>
-                <p>Run your first calculation and save it here to build your library.</p>
-                <a href="/calculator" className={styles.emptyBtn}>
-                    Start Calculating →
-                </a>
-            </div>
+            <EmptyState
+                icon={<ChartBarIcon size={32} />}
+                title="No projects yet"
+                description="Run your first calculation and save it to build your project library."
+                size="md"
+            />
         );
     }
 
@@ -55,19 +56,20 @@ export default function ProjectList({ projects, onLoad, onDelete, onDuplicate })
                     )}
 
                     <div className={styles.actions}>
-                        <button
-                            className={styles.loadBtn}
+                        <Button
+                            variant="primary"
+                            size="sm"
                             onClick={() => onLoad(project)}
                         >
                             Load
-                        </button>
+                        </Button>
                         <button
                             className={styles.actionBtn}
                             onClick={() => onDuplicate(project.id)}
                             title="Duplicate"
                             aria-label="Duplicate project"
                         >
-                            ⧉
+                            <CopyIcon size={14} />
                         </button>
                         <button
                             className={`${styles.actionBtn} ${styles.deleteBtn}`}
@@ -75,7 +77,7 @@ export default function ProjectList({ projects, onLoad, onDelete, onDuplicate })
                             title="Delete"
                             aria-label="Delete project"
                         >
-                            ×
+                            <TrashIcon size={14} />
                         </button>
                     </div>
                 </div>
@@ -83,3 +85,4 @@ export default function ProjectList({ projects, onLoad, onDelete, onDuplicate })
         </div>
     );
 }
+

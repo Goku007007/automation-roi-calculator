@@ -17,6 +17,17 @@
     --warning: #f59e0b;
     --danger: #ef4444;
 
+    /* Semantic Surface Colors */
+    --surface-accent: rgba(59, 130, 246, 0.08);
+    --surface-success: rgba(16, 185, 129, 0.08);
+    --surface-warning: rgba(245, 158, 11, 0.08);
+    --surface-danger: rgba(239, 68, 68, 0.08);
+
+    /* Focus Rings */
+    --focus-ring-accent: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    --focus-ring-success: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    --focus-ring-danger: 0 0 0 3px rgba(239, 68, 68, 0.2);
+
     /* Spacing */
     --spacing-xs: 0.25rem;
     --spacing-sm: 0.5rem;
@@ -59,6 +70,12 @@
 
     --accent: #60a5fa;
     --accent-hover: #3b82f6;
+
+    /* Semantic Surface Colors - Dark */
+    --surface-accent: rgba(96, 165, 250, 0.12);
+    --surface-success: rgba(16, 185, 129, 0.12);
+    --surface-warning: rgba(245, 158, 11, 0.12);
+    --surface-danger: rgba(239, 68, 68, 0.12);
 
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);

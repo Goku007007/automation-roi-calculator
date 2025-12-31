@@ -1,9 +1,24 @@
 // Automation tool pricing data (as of 2024)
+// Icons are referenced by name - components should import from Icons.jsx
+
+export const TOOL_ICONS = {
+    zapier: 'ZapierIcon',
+    make: 'MakeIcon',
+    n8n: 'N8nIcon',
+    powerAutomate: 'PowerAutomateIcon',
+};
+
+export const AI_ICONS = {
+    openai: 'OpenAIIcon',
+    anthropic: 'AnthropicIcon',
+    google: 'GoogleIcon',
+};
+
 export const TOOLS = {
     zapier: {
         name: 'Zapier',
         description: 'Most popular no-code automation',
-        logo: '⚡',
+        iconName: 'ZapierIcon',
         tiers: [
             { name: 'Free', tasks: 100, price: 0, multiStep: false },
             { name: 'Starter', tasks: 750, price: 19.99, multiStep: true },
@@ -17,7 +32,7 @@ export const TOOLS = {
     make: {
         name: 'Make (Integromat)',
         description: 'Visual automation with advanced features',
-        logo: '🔄',
+        iconName: 'MakeIcon',
         tiers: [
             { name: 'Free', operations: 1000, price: 0 },
             { name: 'Core', operations: 10000, price: 9, activeScenarios: 3 },
@@ -31,7 +46,7 @@ export const TOOLS = {
     n8n: {
         name: 'n8n',
         description: 'Self-hostable workflow automation',
-        logo: '🔗',
+        iconName: 'N8nIcon',
         tiers: [
             { name: 'Community (Self-hosted)', executions: 'unlimited', price: 0 },
             { name: 'Starter', executions: 2500, price: 20 },
@@ -44,7 +59,7 @@ export const TOOLS = {
     powerAutomate: {
         name: 'Power Automate',
         description: 'Microsoft ecosystem automation',
-        logo: '⚙️',
+        iconName: 'PowerAutomateIcon',
         tiers: [
             { name: 'Per User', runs: 'unlimited', price: 15, perUser: true },
             { name: 'Per User + RPA', runs: 'unlimited', price: 40, perUser: true, rpa: true },
@@ -58,7 +73,7 @@ export const TOOLS = {
 export const AI_MODELS = {
     openai: {
         name: 'OpenAI',
-        logo: '🤖',
+        iconName: 'OpenAIIcon',
         models: [
             { name: 'GPT-4o', input: 2.50, output: 10.00 },
             { name: 'GPT-4o-mini', input: 0.15, output: 0.60 },
@@ -68,7 +83,7 @@ export const AI_MODELS = {
     },
     anthropic: {
         name: 'Anthropic',
-        logo: '🧠',
+        iconName: 'AnthropicIcon',
         models: [
             { name: 'Claude 3.5 Sonnet', input: 3.00, output: 15.00 },
             { name: 'Claude 3 Haiku', input: 0.25, output: 1.25 },
@@ -77,7 +92,7 @@ export const AI_MODELS = {
     },
     google: {
         name: 'Google',
-        logo: '🌐',
+        iconName: 'GoogleIcon',
         models: [
             { name: 'Gemini 2.0 Flash', input: 0.075, output: 0.30 },
             { name: 'Gemini 1.5 Pro', input: 1.25, output: 5.00 },

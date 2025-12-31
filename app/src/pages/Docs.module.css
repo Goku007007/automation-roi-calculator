@@ -106,11 +106,25 @@
 }
 
 .logo {
-    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
     margin-right: var(--spacing-sm);
 }
 
+.tableCaption {
+    text-align: left;
+    padding: var(--spacing-md);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+}
+
 .link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     font-size: 0.75rem;
     color: var(--accent);
     margin-top: var(--spacing-xs);
@@ -133,14 +147,29 @@
     background: var(--bg-secondary);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
+    display: flex;
+    gap: var(--spacing-md);
 }
 
-.tip h4 {
+.tipIcon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    color: var(--accent);
+    padding-top: 2px;
+}
+
+.tipContent {
+    flex: 1;
+}
+
+.tipContent h4 {
     font-size: 0.9rem;
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-xs);
 }
 
-.tip p {
+.tipContent p {
     font-size: 0.8rem;
     color: var(--text-secondary);
     margin: 0;

@@ -1,5 +1,36 @@
 import { TOOLS, AI_MODELS } from '../utils/toolPricing';
+import {
+    ZapierIcon, MakeIcon, N8nIcon, PowerAutomateIcon,
+    OpenAIIcon, AnthropicIcon, GoogleIcon,
+    TargetIcon, TrendingUpIcon, BrainIcon, RefreshIcon,
+    ExternalLinkIcon
+} from '../components/ui/Icons';
 import styles from './Docs.module.css';
+
+// Map icon names to components for tools
+const toolIconComponents = {
+    ZapierIcon,
+    MakeIcon,
+    N8nIcon,
+    PowerAutomateIcon,
+};
+
+// Map icon names to components for AI providers
+const aiIconComponents = {
+    OpenAIIcon,
+    AnthropicIcon,
+    GoogleIcon,
+};
+
+function getToolIcon(iconName) {
+    const IconComponent = toolIconComponents[iconName];
+    return IconComponent ? <IconComponent size={20} /> : null;
+}
+
+function getAIIcon(iconName) {
+    const IconComponent = aiIconComponents[iconName];
+    return IconComponent ? <IconComponent size={20} /> : null;
+}
 
 export default function Docs() {
     return (
@@ -21,12 +52,15 @@ export default function Docs() {
 
                     <div className={styles.tableWrapper}>
                         <table className={styles.table}>
+                            <caption className={styles.tableCaption}>
+                                Automation platform pricing comparison by tier
+                            </caption>
                             <thead>
                                 <tr>
-                                    <th>Tool</th>
-                                    <th>Tier</th>
-                                    <th>Included</th>
-                                    <th>Price/mo</th>
+                                    <th scope="col">Tool</th>
+                                    <th scope="col">Tier</th>
+                                    <th scope="col">Included</th>
+                                    <th scope="col">Price/mo</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -35,11 +69,19 @@ export default function Docs() {
                                         <tr key={`${key}-${i}`}>
                                             {i === 0 && (
                                                 <td rowSpan={tool.tiers.length} className={styles.toolName}>
-                                                    <span className={styles.logo}>{tool.logo}</span>
+                                                    <span className={styles.logo}>
+                                                        {getToolIcon(tool.iconName)}
+                                                    </span>
                                                     <div>
                                                         <strong>{tool.name}</strong>
-                                                        <a href={tool.url} target="_blank" rel="noopener noreferrer" className={styles.link}>
-                                                            Official pricing →
+                                                        <a
+                                                            href={tool.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className={styles.link}
+                                                        >
+                                                            <span>Official pricing</span>
+                                                            <ExternalLinkIcon size={12} />
                                                         </a>
                                                     </div>
                                                 </td>
@@ -72,12 +114,15 @@ export default function Docs() {
 
                     <div className={styles.tableWrapper}>
                         <table className={styles.table}>
+                            <caption className={styles.tableCaption}>
+                                AI model pricing per million tokens
+                            </caption>
                             <thead>
                                 <tr>
-                                    <th>Provider</th>
-                                    <th>Model</th>
-                                    <th>Input (per 1M)</th>
-                                    <th>Output (per 1M)</th>
+                                    <th scope="col">Provider</th>
+                                    <th scope="col">Model</th>
+                                    <th scope="col">Input (per 1M)</th>
+                                    <th scope="col">Output (per 1M)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -86,7 +131,9 @@ export default function Docs() {
                                         <tr key={`${key}-${i}`}>
                                             {i === 0 && (
                                                 <td rowSpan={provider.models.length} className={styles.toolName}>
-                                                    <span className={styles.logo}>{provider.logo}</span>
+                                                    <span className={styles.logo}>
+                                                        {getAIIcon(provider.iconName)}
+                                                    </span>
                                                     <strong>{provider.name}</strong>
                                                 </td>
                                             )}
@@ -106,20 +153,40 @@ export default function Docs() {
                     <h2>Cost Optimization Tips</h2>
                     <div className={styles.tips}>
                         <div className={styles.tip}>
-                            <h4>🎯 Start Small</h4>
-                            <p>Begin with free tiers to validate your automation before scaling up.</p>
+                            <div className={styles.tipIcon}>
+                                <TargetIcon size={20} />
+                            </div>
+                            <div className={styles.tipContent}>
+                                <h4>Start Small</h4>
+                                <p>Begin with free tiers to validate your automation before scaling up.</p>
+                            </div>
                         </div>
                         <div className={styles.tip}>
-                            <h4>📊 Monitor Usage</h4>
-                            <p>Track task counts closely in the first month to pick the right tier.</p>
+                            <div className={styles.tipIcon}>
+                                <TrendingUpIcon size={20} />
+                            </div>
+                            <div className={styles.tipContent}>
+                                <h4>Monitor Usage</h4>
+                                <p>Track task counts closely in the first month to pick the right tier.</p>
+                            </div>
                         </div>
                         <div className={styles.tip}>
-                            <h4>🧠 Optimize AI Calls</h4>
-                            <p>Use smaller models like GPT-4o-mini or Gemini Flash for simpler tasks.</p>
+                            <div className={styles.tipIcon}>
+                                <BrainIcon size={20} />
+                            </div>
+                            <div className={styles.tipContent}>
+                                <h4>Optimize AI Calls</h4>
+                                <p>Use smaller models like GPT-4o-mini or Gemini Flash for simpler tasks.</p>
+                            </div>
                         </div>
                         <div className={styles.tip}>
-                            <h4>🔄 Batch Operations</h4>
-                            <p>Combine multiple steps into single runs to reduce operation counts.</p>
+                            <div className={styles.tipIcon}>
+                                <RefreshIcon size={20} />
+                            </div>
+                            <div className={styles.tipContent}>
+                                <h4>Batch Operations</h4>
+                                <p>Combine multiple steps into single runs to reduce operation counts.</p>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -132,3 +199,4 @@ export default function Docs() {
         </div>
     );
 }
+
