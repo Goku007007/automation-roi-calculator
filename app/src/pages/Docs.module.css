@@ -45,8 +45,6 @@
     background: var(--bg-secondary);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
-    max-height: 500px;
-    overflow-y: auto;
 }
 
 /* Scroll shadow hint */
@@ -96,21 +94,27 @@
 }
 
 .toolName {
-    vertical-align: top;
+    vertical-align: middle;
     background: var(--bg-primary);
 }
 
-.toolName div {
+.toolNameContent {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
 }
 
 .logo {
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--accent);
-    margin-right: var(--spacing-sm);
+}
+
+.toolInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
 .tableCaption {
@@ -125,9 +129,13 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--accent);
-    margin-top: var(--spacing-xs);
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
 }
 
 .price {

@@ -69,20 +69,22 @@ export default function Docs() {
                                         <tr key={`${key}-${i}`}>
                                             {i === 0 && (
                                                 <td rowSpan={tool.tiers.length} className={styles.toolName}>
-                                                    <span className={styles.logo}>
-                                                        {getToolIcon(tool.iconName)}
-                                                    </span>
-                                                    <div>
-                                                        <strong>{tool.name}</strong>
-                                                        <a
-                                                            href={tool.url}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className={styles.link}
-                                                        >
-                                                            <span>Official pricing</span>
-                                                            <ExternalLinkIcon size={12} />
-                                                        </a>
+                                                    <div className={styles.toolNameContent}>
+                                                        <span className={styles.logo}>
+                                                            {getToolIcon(tool.iconName)}
+                                                        </span>
+                                                        <div className={styles.toolInfo}>
+                                                            <strong>{tool.name}</strong>
+                                                            <a
+                                                                href={tool.url}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className={styles.link}
+                                                            >
+                                                                <span>Official pricing</span>
+                                                                <ExternalLinkIcon size={10} />
+                                                            </a>
+                                                        </div>
                                                     </div>
                                                 </td>
                                             )}
@@ -131,10 +133,12 @@ export default function Docs() {
                                         <tr key={`${key}-${i}`}>
                                             {i === 0 && (
                                                 <td rowSpan={provider.models.length} className={styles.toolName}>
-                                                    <span className={styles.logo}>
-                                                        {getAIIcon(provider.iconName)}
-                                                    </span>
-                                                    <strong>{provider.name}</strong>
+                                                    <div className={styles.toolNameContent}>
+                                                        <span className={styles.logo}>
+                                                            {getAIIcon(provider.iconName)}
+                                                        </span>
+                                                        <strong>{provider.name}</strong>
+                                                    </div>
                                                 </td>
                                             )}
                                             <td>{model.name}</td>

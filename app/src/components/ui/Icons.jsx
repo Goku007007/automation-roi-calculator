@@ -167,42 +167,35 @@ export function PowerAutomateIcon({ size = 24, className = '' }) {
     );
 }
 
-// AI Provider Icons
+// AI Provider Icons - with brand colors
 export function OpenAIIcon({ size = 24, className = '' }) {
     return (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-            <path d="M12 8V4H8" />
-            <rect width="16" height="12" x="4" y="8" rx="2" />
-            <path d="M2 14h2" />
-            <path d="M20 14h2" />
-            <path d="M15 13v2" />
-            <path d="M9 13v2" />
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
+            {/* OpenAI - Teal/Cyan #10A37F */}
+            <circle cx="12" cy="12" r="11" fill="#10A37F" />
+            <path d="M12 6v6l4 2" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <circle cx="12" cy="12" r="3" stroke="white" strokeWidth="2" fill="none" />
         </svg>
     );
 }
 
 export function AnthropicIcon({ size = 24, className = '' }) {
     return (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-            <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" />
-            <path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z" />
-            <path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4" />
-            <path d="M17.599 6.5a3 3 0 0 0 .399-1.375" />
-            <path d="M6.003 5.125A3 3 0 0 0 6.401 6.5" />
-            <path d="M3.477 10.896a4 4 0 0 1 .585-.396" />
-            <path d="M19.938 10.5a4 4 0 0 1 .585.396" />
-            <path d="M6 18a4 4 0 0 1-1.967-.516" />
-            <path d="M19.967 17.484A4 4 0 0 1 18 18" />
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
+            {/* Anthropic - Coral/Brown #D4A373 */}
+            <circle cx="12" cy="12" r="11" fill="#D4A373" />
+            <path d="M12 7l5 10H7l5-10z" stroke="white" strokeWidth="2" strokeLinejoin="round" fill="none" />
         </svg>
     );
 }
 
 export function GoogleIcon({ size = 24, className = '' }) {
     return (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-            <circle cx="12" cy="12" r="10" />
-            <path d="M2 12h20" />
-            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
+            {/* Google AI - Blue #4285F4 */}
+            <circle cx="12" cy="12" r="11" fill="#4285F4" />
+            <path d="M17 12H12V9.5L17 12L12 14.5V12Z" fill="white" />
+            <circle cx="9" cy="12" r="2.5" stroke="white" strokeWidth="2" fill="none" />
         </svg>
     );
 }
