@@ -81,13 +81,41 @@ export async function calculateROI(data) {
 }
 
 export async function generatePDF(data) {
+    // Add missing fields that backend expects with sensible defaults
+    const fullData = {
+        ...data,
+        working_days_per_year: data.working_days_per_year || 250,
+        hours_per_day: data.hours_per_day || 8,
+        error_rate: parseFloat(data.error_rate) || 0,
+        error_fix_cost: parseFloat(data.error_fix_cost) || 0,
+        error_fix_hours: parseFloat(data.error_fix_hours) || 0,
+        has_sla: data.has_sla || false,
+        sla_penalty: parseFloat(data.sla_penalty) || 0,
+        sla_breaches_year: parseInt(data.sla_breaches_year) || 0,
+        current_tool_cost: parseFloat(data.current_tool_cost) || 0,
+        volume_growth: parseFloat(data.volume_growth) || 0,
+        expected_labor_reduction: parseFloat(data.expected_labor_reduction) || 70,
+        expected_error_reduction: parseFloat(data.expected_error_reduction) || 80,
+        expected_sla_improvement: parseFloat(data.expected_sla_improvement) || 75,
+        // Ensure numeric fields are numbers
+        runs_per_period: parseInt(data.runs_per_period),
+        hours_per_run: parseFloat(data.hours_per_run),
+        staff_count: parseInt(data.staff_count),
+        hourly_rate: parseFloat(data.hourly_rate),
+        implementation_cost: parseFloat(data.implementation_cost) || 0,
+        software_license_cost: parseFloat(data.software_license_cost) || 0,
+        annual_maintenance_cost: parseFloat(data.annual_maintenance_cost) || 0,
+    };
+
     const response = await fetch(`${API_URL}/generate-pdf`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(fullData),
     });
 
     if (!response.ok) {
+        const error = await response.text();
+        console.error('PDF generation error:', error);
         throw new Error('PDF generation failed');
     }
 
