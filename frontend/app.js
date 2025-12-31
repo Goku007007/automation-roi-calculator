@@ -80,8 +80,24 @@ function getFormData() {
         hours_per_run: parseFloat(document.getElementById("hours_per_run").value),
         staff_count: parseInt(document.getElementById("staff_count").value),
         hourly_rate: parseFloat(document.getElementById("hourly_rate").value),
-        implementation_cost: parseFloat(document.getElementById("implementation_cost").value)
+        // Automation Investment
+        implementation_cost: parseFloat(document.getElementById("implementation_cost").value) || 0,
+        software_license_cost: parseFloat(document.getElementById("software_license_cost").value) || 0,
+        annual_maintenance_cost: parseFloat(document.getElementById("annual_maintenance_cost").value) || 0,
+        // Advanced Settings
+        error_rate: parseFloat(document.getElementById("error_rate").value) || 0,
+        error_fix_cost: parseFloat(document.getElementById("error_fix_cost").value) || 0,
+        expected_labor_reduction: parseFloat(document.getElementById("expected_labor_reduction").value) || 70
     };
+}
+
+// Slider live update
+const slider = document.getElementById("expected_labor_reduction");
+const sliderValue = document.getElementById("labor-reduction-value");
+if (slider && sliderValue) {
+    slider.addEventListener("input", () => {
+        sliderValue.textContent = slider.value;
+    });
 }
 
 
@@ -149,8 +165,8 @@ function displayResults(data) {
                     <span class="value">$${data.annual_labor_cost.toLocaleString()}</span>
                 </div>
                 <div class="metric highlight-savings">
-                    <span class="label">Annual Savings</span>
-                    <span class="value">$${data.annual_savings.toLocaleString()}</span>
+                    <span class="label">Net Annual Savings</span>
+                    <span class="value">$${(data.net_annual_savings || data.annual_savings).toLocaleString()}</span>
                 </div>
                 <div class="metric">
                     <span class="label">Payback Period</span>
@@ -161,7 +177,7 @@ function displayResults(data) {
                     <span class="value">${data.roi_percentage}%</span>
                 </div>
                 <div class="metric">
-                    <span class="label">5-Year Savings</span>
+                    <span class="label">5-Year Net Savings</span>
                     <span class="value">$${data.five_year_savings.toLocaleString()}</span>
                 </div>
                 <div class="metric priority-${data.priority_score.toLowerCase()}">
@@ -217,20 +233,20 @@ function createComparisonChart(data) {
                 label: 'Amount ($)',
                 data: [
                     data.implementation_cost,
-                    data.annual_savings,
-                    data.annual_savings - data.implementation_cost
+                    data.net_annual_savings || data.annual_savings,
+                    (data.net_annual_savings || data.annual_savings) - data.implementation_cost
                 ],
                 backgroundColor: [
                     'rgba(239, 68, 68, 0.7)',   // Red for cost
                     'rgba(16, 185, 129, 0.7)',  // Green for savings
-                    data.annual_savings > data.implementation_cost
+                    (data.net_annual_savings || data.annual_savings) > data.implementation_cost
                         ? 'rgba(59, 130, 246, 0.7)'   // Blue if positive
                         : 'rgba(245, 158, 11, 0.7)'   // Amber if negative
                 ],
                 borderColor: [
                     'rgb(239, 68, 68)',
                     'rgb(16, 185, 129)',
-                    data.annual_savings > data.implementation_cost
+                    (data.net_annual_savings || data.annual_savings) > data.implementation_cost
                         ? 'rgb(59, 130, 246)'
                         : 'rgb(245, 158, 11)'
                 ],
@@ -287,7 +303,7 @@ function createSavingsChart(data) {
     // Calculate cumulative savings over 5 years
     const years = ['Year 0', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'];
     const cumulativeSavings = [0];
-    const annualSavings = data.annual_savings;
+    const annualSavings = data.net_annual_savings || data.annual_savings;
 
     for (let i = 1; i <= 5; i++) {
         const cumulative = (annualSavings * i) - data.implementation_cost;

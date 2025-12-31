@@ -70,17 +70,65 @@
 
                     <!-- Cost: Hourly rate per person -->
                     <div class="form-group">
-                        <label for="hourly_rate">Hourly rate ($)</label>
+                        <label for="hourly_rate">Hourly rate ($) <span class="tooltip"
+                                title="Include benefits and overhead for accuracy">?</span></label>
                         <input type="number" id="hourly_rate" name="hourly_rate" min="15" max="500"
                             placeholder="e.g. 35" required>
                     </div>
 
-                    <!-- Investment: One-time automation cost -->
-                    <div class="form-group">
-                        <label for="implementation_cost">Automation implementation cost ($)</label>
-                        <input type="number" id="implementation_cost" name="implementation_cost" min="1000" max="500000"
-                            placeholder="e.g. 25000" required>
+                    <!-- Section: Automation Investment -->
+                    <div class="form-section">
+                        <h3>Automation Investment</h3>
+
+                        <!-- Investment: One-time automation cost -->
+                        <div class="form-group">
+                            <label for="implementation_cost">One-time setup cost ($)</label>
+                            <input type="number" id="implementation_cost" name="implementation_cost" min="0"
+                                max="500000" placeholder="e.g. 25000" required>
+                        </div>
+
+                        <!-- Annual License Cost -->
+                        <div class="form-group">
+                            <label for="software_license_cost">Annual software license ($) <span
+                                    class="optional">optional</span></label>
+                            <input type="number" id="software_license_cost" name="software_license_cost" min="0"
+                                max="100000" placeholder="e.g. 5000" value="0">
+                        </div>
+
+                        <!-- Annual Maintenance Cost -->
+                        <div class="form-group">
+                            <label for="annual_maintenance_cost">Annual maintenance ($) <span
+                                    class="optional">optional</span></label>
+                            <input type="number" id="annual_maintenance_cost" name="annual_maintenance_cost" min="0"
+                                max="50000" placeholder="e.g. 2000" value="0">
+                        </div>
                     </div>
+
+                    <!-- Advanced Settings Toggle -->
+                    <details class="advanced-section">
+                        <summary>Advanced Settings</summary>
+
+                        <!-- Error Tracking -->
+                        <div class="form-group">
+                            <label for="error_rate">Error rate (% of runs with errors)</label>
+                            <input type="number" id="error_rate" name="error_rate" min="0" max="50" step="0.1"
+                                placeholder="e.g. 5" value="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="error_fix_cost">Cost per error ($)</label>
+                            <input type="number" id="error_fix_cost" name="error_fix_cost" min="0" max="10000"
+                                placeholder="e.g. 50" value="0">
+                        </div>
+
+                        <!-- Labor Reduction Slider -->
+                        <div class="form-group slider-group">
+                            <label for="expected_labor_reduction">Expected labor reduction: <span
+                                    id="labor-reduction-value">70</span>%</label>
+                            <input type="range" id="expected_labor_reduction" name="expected_labor_reduction" min="10"
+                                max="100" value="70" class="slider">
+                        </div>
+                    </details>
 
                     <!-- Submit Button -->
                     <button type="submit" id="calculate-btn">Calculate ROI</button>
