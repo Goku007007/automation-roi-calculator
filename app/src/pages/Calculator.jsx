@@ -1,15 +1,22 @@
 import { useState } from 'react';
 import CalculatorForm from '../components/calculator/CalculatorForm';
 import Results from '../components/calculator/Results';
+import ProjectList from '../components/calculator/ProjectList';
+import { useProjects } from '../hooks/useProjects';
 import { calculateROI, generatePDF } from '../utils/api';
 import styles from './Calculator.module.css';
 
 export default function Calculator() {
     const [results, setResults] = useState(null);
     const [formData, setFormData] = useState(null);
+    const [formKey, setFormKey] = useState(0); // For resetting form
     const [isLoading, setIsLoading] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
     const [error, setError] = useState(null);
+    const [showProjects, setShowProjects] = useState(false);
+    const [loadedInputs, setLoadedInputs] = useState(null);
+
+    const { projects, saveProject, deleteProject, duplicateProject } = useProjects();
 
     const handleSubmit = async (data) => {
         setIsLoading(true);
@@ -25,6 +32,20 @@ export default function Calculator() {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const handleSaveProject = () => {
+        if (!formData || !results) return;
+        saveProject({ inputs: formData, results });
+        setShowProjects(true);
+    };
+
+    const handleLoadProject = (project) => {
+        setLoadedInputs(project.inputs);
+        setResults(project.results);
+        setFormData(project.inputs);
+        setFormKey(prev => prev + 1); // Force form re-render
+        setShowProjects(false);
     };
 
     const handleDownloadPDF = async () => {
@@ -50,30 +71,78 @@ export default function Calculator() {
 
     return (
         <div className={styles.page}>
-            <div className={styles.container}>
-                <div className={styles.header}>
-                    <h1>ROI Calculator</h1>
-                    <p className={styles.subtitle}>
-                        Calculate the return on investment for your automation projects.
-                    </p>
-                </div>
-
-                {error && (
-                    <div className={styles.error}>
-                        {error}
+            <div className={styles.layout}>
+                {/* Sidebar - Saved Projects */}
+                <aside className={`${styles.sidebar} ${showProjects ? styles.sidebarOpen : ''}`}>
+                    <div className={styles.sidebarHeader}>
+                        <h3>Saved Projects</h3>
+                        <button
+                            className={styles.closeBtn}
+                            onClick={() => setShowProjects(false)}
+                        >
+                            ×
+                        </button>
                     </div>
-                )}
+                    <ProjectList
+                        projects={projects}
+                        onLoad={handleLoadProject}
+                        onDelete={deleteProject}
+                        onDuplicate={duplicateProject}
+                    />
+                </aside>
 
-                <CalculatorForm
-                    onSubmit={handleSubmit}
-                    isLoading={isLoading}
-                />
+                {/* Main Content */}
+                <main className={styles.main}>
+                    <div className={styles.container}>
+                        <div className={styles.header}>
+                            <div>
+                                <h1>ROI Calculator</h1>
+                                <p className={styles.subtitle}>
+                                    Calculate the return on investment for your automation projects.
+                                </p>
+                            </div>
+                            <button
+                                className={styles.projectsBtn}
+                                onClick={() => setShowProjects(!showProjects)}
+                            >
+                                Projects ({projects.length})
+                            </button>
+                        </div>
 
-                <Results
-                    data={results}
-                    onDownloadPDF={handleDownloadPDF}
-                    isDownloading={isDownloading}
-                />
+                        {error && (
+                            <div className={styles.error}>
+                                {error}
+                            </div>
+                        )}
+
+                        <CalculatorForm
+                            key={formKey}
+                            onSubmit={handleSubmit}
+                            isLoading={isLoading}
+                            initialData={loadedInputs}
+                        />
+
+                        {results && (
+                            <>
+                                <Results
+                                    data={results}
+                                    onDownloadPDF={handleDownloadPDF}
+                                    isDownloading={isDownloading}
+                                />
+
+                                {/* Save Project Button */}
+                                <div className={styles.saveActions}>
+                                    <button
+                                        className={styles.saveBtn}
+                                        onClick={handleSaveProject}
+                                    >
+                                        Save Project
+                                    </button>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </main>
             </div>
         </div>
     );

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './CalculatorForm.module.css';
 
 const FREQUENCIES = [
@@ -26,9 +26,29 @@ const defaultFormData = {
     expected_labor_reduction: 70,
 };
 
-export default function CalculatorForm({ onSubmit, isLoading }) {
+export default function CalculatorForm({ onSubmit, isLoading, initialData }) {
     const [formData, setFormData] = useState(defaultFormData);
     const [showAdvanced, setShowAdvanced] = useState(false);
+
+    // Load initial data when provided (e.g., from saved project)
+    useEffect(() => {
+        if (initialData) {
+            setFormData({
+                process_name: initialData.process_name || '',
+                frequency: initialData.frequency || 'daily',
+                runs_per_period: initialData.runs_per_period?.toString() || '',
+                hours_per_run: initialData.hours_per_run?.toString() || '',
+                staff_count: initialData.staff_count?.toString() || '',
+                hourly_rate: initialData.hourly_rate?.toString() || '',
+                implementation_cost: initialData.implementation_cost?.toString() || '',
+                software_license_cost: initialData.software_license_cost?.toString() || '0',
+                annual_maintenance_cost: initialData.annual_maintenance_cost?.toString() || '0',
+                error_rate: initialData.error_rate?.toString() || '0',
+                error_fix_cost: initialData.error_fix_cost?.toString() || '0',
+                expected_labor_reduction: initialData.expected_labor_reduction || 70,
+            });
+        }
+    }, [initialData]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
