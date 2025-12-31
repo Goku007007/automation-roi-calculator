@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { ChartBarIcon, WrenchIcon, RocketIcon, CheckCircleIcon } from '../components/ui/Icons';
 import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
+import Select from '../components/ui/Select';
+import Textarea from '../components/ui/Textarea';
 import styles from './Business.module.css';
 
 export default function Business() {
@@ -88,74 +91,65 @@ export default function Business() {
                     ) : (
                         <form className={styles.form} onSubmit={handleSubmit}>
                             <div className={styles.row}>
-                                <div className={styles.formGroup}>
-                                    <label htmlFor="name">Name *</label>
-                                    <input
-                                        type="text"
-                                        id="name"
-                                        name="name"
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        placeholder="John Smith"
-                                        required
-                                    />
-                                </div>
-                                <div className={styles.formGroup}>
-                                    <label htmlFor="email">Work Email *</label>
-                                    <input
-                                        type="email"
-                                        id="email"
-                                        name="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        placeholder="john@company.com"
-                                        required
-                                    />
-                                </div>
-                            </div>
-
-                            <div className={styles.row}>
-                                <div className={styles.formGroup}>
-                                    <label htmlFor="company">Company</label>
-                                    <input
-                                        type="text"
-                                        id="company"
-                                        name="company"
-                                        value={formData.company}
-                                        onChange={handleChange}
-                                        placeholder="Acme Corp"
-                                    />
-                                </div>
-                                <div className={styles.formGroup}>
-                                    <label htmlFor="employees">Company Size</label>
-                                    <select
-                                        id="employees"
-                                        name="employees"
-                                        value={formData.employees}
-                                        onChange={handleChange}
-                                    >
-                                        <option value="">Select...</option>
-                                        <option value="1-10">1-10 employees</option>
-                                        <option value="11-50">11-50 employees</option>
-                                        <option value="51-200">51-200 employees</option>
-                                        <option value="201-1000">201-1000 employees</option>
-                                        <option value="1000+">1000+ employees</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className={styles.formGroup}>
-                                <label htmlFor="message">How can we help? *</label>
-                                <textarea
-                                    id="message"
-                                    name="message"
-                                    value={formData.message}
+                                <Input
+                                    label="Name"
+                                    id="name"
+                                    name="name"
+                                    value={formData.name}
                                     onChange={handleChange}
-                                    placeholder="Tell us about the processes you'd like to automate..."
-                                    rows={5}
+                                    placeholder="John Smith"
+                                    required
+                                />
+                                <Input
+                                    label="Work Email"
+                                    id="email"
+                                    name="email"
+                                    type="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    placeholder="john@company.com"
                                     required
                                 />
                             </div>
+
+                            <div className={styles.row}>
+                                <Input
+                                    label="Company"
+                                    id="company"
+                                    name="company"
+                                    value={formData.company}
+                                    onChange={handleChange}
+                                    placeholder="Acme Corp"
+                                    optional
+                                />
+                                <Select
+                                    label="Company Size"
+                                    id="employees"
+                                    name="employees"
+                                    value={formData.employees}
+                                    onChange={handleChange}
+                                    placeholder="Select..."
+                                    options={[
+                                        { value: '1-10', label: '1-10 employees' },
+                                        { value: '11-50', label: '11-50 employees' },
+                                        { value: '51-200', label: '51-200 employees' },
+                                        { value: '201-1000', label: '201-1000 employees' },
+                                        { value: '1000+', label: '1000+ employees' },
+                                    ]}
+                                    optional
+                                />
+                            </div>
+
+                            <Textarea
+                                label="How can we help?"
+                                id="message"
+                                name="message"
+                                value={formData.message}
+                                onChange={handleChange}
+                                placeholder="Tell us about the processes you'd like to automate..."
+                                rows={5}
+                                required
+                            />
 
                             <Button
                                 type="submit"
