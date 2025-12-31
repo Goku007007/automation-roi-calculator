@@ -81,6 +81,14 @@ export async function calculateROI(data) {
 }
 
 export async function generatePDF(data) {
+    console.log('generatePDF called with:', data);
+
+    // Validate required fields
+    if (!data || !data.process_name || !data.runs_per_period) {
+        console.error('generatePDF: Missing required data', data);
+        throw new Error('Missing required form data');
+    }
+
     // Add missing fields that backend expects with sensible defaults
     const fullData = {
         ...data,
@@ -107,19 +115,29 @@ export async function generatePDF(data) {
         annual_maintenance_cost: parseFloat(data.annual_maintenance_cost) || 0,
     };
 
-    const response = await fetch(`${API_URL}/generate-pdf`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(fullData),
-    });
+    console.log('Sending to API:', fullData);
+    console.log('API URL:', `${API_URL}/generate-pdf`);
 
-    if (!response.ok) {
-        const error = await response.text();
-        console.error('PDF generation error:', error);
-        throw new Error('PDF generation failed');
+    try {
+        const response = await fetch(`${API_URL}/generate-pdf`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(fullData),
+        });
+
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+            const error = await response.text();
+            console.error('PDF generation error:', error);
+            throw new Error('PDF generation failed');
+        }
+
+        return response.blob();
+    } catch (err) {
+        console.error('Fetch error:', err);
+        throw err;
     }
-
-    return response.blob();
 }
 
 export async function checkHealth() {
