@@ -16,6 +16,23 @@ let authRequired = false;
 let savingsChart = null;
 let comparisonChart = null;
 
+/**
+ * Format large numbers compactly (e.g., $1.2M instead of $1,200,000)
+ */
+function formatCompact(value) {
+    const absValue = Math.abs(value);
+    const sign = value < 0 ? '-' : '';
+
+    if (absValue >= 1e9) {
+        return sign + '$' + (absValue / 1e9).toFixed(1) + 'B';
+    } else if (absValue >= 1e6) {
+        return sign + '$' + (absValue / 1e6).toFixed(1) + 'M';
+    } else if (absValue >= 1e3) {
+        return sign + '$' + (absValue / 1e3).toFixed(0) + 'K';
+    }
+    return sign + '$' + absValue.toLocaleString();
+}
+
 // Get form and results elements
 const form = document.getElementById("roi-form");
 const resultsSection = document.getElementById("results-section");
@@ -195,7 +212,7 @@ function createComparisonChart(data) {
     comparisonChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Implementation Cost', 'Annual Savings', 'Year 1 Net'],
+            labels: ['Cost', 'Savings', 'Year 1 Net'],
             datasets: [{
                 label: 'Amount ($)',
                 data: [
@@ -235,12 +252,18 @@ function createComparisonChart(data) {
                 }
             },
             scales: {
+                x: {
+                    ticks: {
+                        font: { size: 11 }
+                    }
+                },
                 y: {
                     beginAtZero: true,
                     ticks: {
                         callback: function (value) {
-                            return '$' + value.toLocaleString();
-                        }
+                            return formatCompact(value);
+                        },
+                        font: { size: 11 }
                     }
                 }
             }
@@ -302,11 +325,17 @@ function createSavingsChart(data) {
                 }
             },
             scales: {
+                x: {
+                    ticks: {
+                        font: { size: 11 }
+                    }
+                },
                 y: {
                     ticks: {
                         callback: function (value) {
-                            return '$' + value.toLocaleString();
-                        }
+                            return formatCompact(value);
+                        },
+                        font: { size: 11 }
                     }
                 }
             }
