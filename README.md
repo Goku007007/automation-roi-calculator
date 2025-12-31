@@ -1,62 +1,119 @@
-# Automation ROI Calculator
+# 📊 AutomateROI
 
-An open source tool that helps organizations calculate the financial return on investment (ROI) for automating manual processes.
+> Calculate your automation ROI in minutes. No spreadsheets required.
 
-## Features
+A modern web app to help businesses make data-driven decisions about automation investments. Calculate payback periods, compare scenarios, and generate professional PDF reports.
 
-- Calculate annual cost savings from automation
-- Determine payback period for automation investments
-- Generate priority recommendations based on ROI metrics
-- Download PDF reports for sharing
-- Optional JWT authentication
+![React](https://img.shields.io/badge/React-18-blue)
+![Python](https://img.shields.io/badge/Python-3.11-green)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
-## Quick Start
+## ✨ Features
+
+- **ROI Calculator** - Calculate payback, annual savings, and 5-year projections
+- **Scenario Compare** - Compare Base/Best/Worst case scenarios side-by-side
+- **Cost Playground** - Estimate costs for Zapier, Make, n8n, and AI models
+- **PDF Reports** - Generate professional PDF reports with charts
+- **Project Saving** - Save and load projects with LocalStorage
+- **Dark/Light Mode** - Automatic theme with manual toggle
+
+## 🖼️ Screenshots
+
+### Home
+![Home](docs/screenshots/home.png)
+
+### Calculator Results
+![Calculator](docs/screenshots/calculator.png)
+
+### Cost Playground
+![Playground](docs/screenshots/playground.png)
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+
+- Python 3.11+
+- pip
+
+### Frontend
 
 ```bash
-# Clone the repository
-git clone https://github.com/Goku007007/automation-roi-calculator.git
-cd automation-roi-calculator
+cd app
+npm install
+npm run dev
+```
 
-# Create virtual environment
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+Frontend runs at `http://localhost:5173`
 
-# Install dependencies
-pip install -r backend/requirements.txt
+### Backend
 
-# Start the server
+```bash
 cd backend
+pip install -r requirements.txt
 python main.py
 ```
 
-Open `frontend/index.html` in your browser.
+Backend runs at `http://localhost:8007`
 
-## API
+## 📁 Project Structure
 
-- Server runs at `http://localhost:8007`
-- Interactive docs at `http://localhost:8007/docs`
-- Health check: `GET /health`
-- Calculate ROI: `POST /calculate`
-- Generate PDF: `POST /generate-pdf`
-
-## Optional: Enable Authentication
-
-```bash
-REQUIRE_AUTH=true python main.py
+```
+automation-roi-calculator/
+├── app/                    # React frontend (Vite)
+│   ├── src/
+│   │   ├── components/     # Reusable components
+│   │   ├── pages/          # Page components
+│   │   ├── hooks/          # Custom hooks
+│   │   ├── utils/          # Utilities
+│   │   └── styles/         # Global CSS
+│   └── package.json
+├── backend/                # Python FastAPI
+│   ├── main.py             # API server
+│   ├── roi_calculator.py   # Business logic
+│   ├── pdf_generator.py    # PDF creation
+│   └── requirements.txt
+└── README.md
 ```
 
-When enabled, get a token from `GET /token` and include it in requests.
+## 🔧 Tech Stack
 
-## Tech Stack
+| Layer | Technology |
+|-------|------------|
+| Frontend | React 18, Vite, React Router |
+| Styling | CSS Modules, CSS Variables |
+| Backend | Python, FastAPI, FPDF |
+| Charts | Chart.js |
 
-- **Backend**: Python, FastAPI, Pydantic
-- **Frontend**: HTML, CSS, JavaScript
-- **PDF**: ReportLab
+## 📝 API Endpoints
 
-## Documentation
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/calculate` | Calculate ROI from inputs |
+| POST | `/generate-pdf` | Generate PDF report |
 
-See [DOCS.md](DOCS.md) for detailed technical documentation.
+## 🌐 Deployment
 
-## License
+### Vercel (Frontend)
+```bash
+cd app
+npm run build
+# Deploy dist/ to Vercel
+```
 
-MIT License
+### Railway/Render (Backend)
+Deploy the `backend/` directory with Python runtime.
+
+## 📄 License
+
+MIT License - feel free to use for personal or commercial projects.
+
+## 🤝 Contributing
+
+1. Fork the repo
+2. Create a feature branch
+3. Make changes
+4. Submit a PR
+
+---
+
+Built with ❤️ using React + FastAPI
