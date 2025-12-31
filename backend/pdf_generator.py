@@ -169,11 +169,14 @@ def create_detailed_metrics(data: ROIOutput, styles: dict) -> list:
     metrics_data = [
         ["Metric", "Value"],
         ["Annual Labor Cost", f"${data.annual_labor_cost:,.2f}"],
-        ["Annual Savings", f"${data.annual_savings:,.2f}"],
+        ["Gross Annual Savings", f"${data.annual_savings:,.2f}"],
+        ["Annual Automation Cost", f"${data.annual_automation_cost:,.2f}"],
+        ["Net Annual Savings", f"${data.net_annual_savings:,.2f}"],
         ["Implementation Cost", f"${data.implementation_cost:,.2f}"],
+        ["5-Year Total Cost", f"${data.total_cost_of_ownership:,.2f}"],
         ["Payback Period", f"{data.payback_months} months"],
         ["First Year ROI", f"{data.roi_percentage}%"],
-        ["5-Year Total Savings", f"${data.five_year_savings:,.2f}"],
+        ["5-Year Net Savings", f"${data.five_year_savings:,.2f}"],
         ["Priority Score", data.priority_score],
     ]
     
