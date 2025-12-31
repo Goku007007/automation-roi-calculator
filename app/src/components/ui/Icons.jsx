@@ -123,37 +123,46 @@ export function InfoIcon({ size = 24, className = '' }) {
 }
 
 // Tool/Platform Icons
+// Brand Logos - with official brand colors
 export function ZapierIcon({ size = 24, className = '' }) {
     return (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
+            {/* Zapier "Z" bolt logo - Orange #FF4A00 */}
+            <circle cx="12" cy="12" r="11" fill="#FF4A00" />
+            <path d="M7 8h10L9.5 16H17" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
         </svg>
     );
 }
 
 export function MakeIcon({ size = 24, className = '' }) {
     return (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-            <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
-            <path d="M21 3v5h-5" />
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
+            {/* Make infinity/flow logo - Purple #B02DE9 */}
+            <circle cx="12" cy="12" r="11" fill="#B02DE9" />
+            <path d="M6.5 12c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5S6.5 13.38 6.5 12z" stroke="white" strokeWidth="2" fill="none" />
+            <path d="M12.5 12c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5-2.5-1.12-2.5-2.5z" stroke="white" strokeWidth="2" fill="none" />
         </svg>
     );
 }
 
 export function N8nIcon({ size = 24, className = '' }) {
     return (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
+            {/* n8n node connector logo - Coral/Pink #EA4B71 */}
+            <circle cx="12" cy="12" r="11" fill="#EA4B71" />
+            <circle cx="8" cy="12" r="2" fill="white" />
+            <circle cx="16" cy="12" r="2" fill="white" />
+            <path d="M10 12h4" stroke="white" strokeWidth="2" strokeLinecap="round" />
         </svg>
     );
 }
 
 export function PowerAutomateIcon({ size = 24, className = '' }) {
     return (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-            <circle cx="12" cy="12" r="3" />
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
+            {/* Power Automate flow logo - Microsoft Blue #0066FF */}
+            <circle cx="12" cy="12" r="11" fill="#0066FF" />
+            <path d="M8 8l8 4-8 4V8z" fill="white" />
         </svg>
     );
 }
