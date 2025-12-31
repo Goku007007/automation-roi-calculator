@@ -53,9 +53,11 @@ class ROIInput(BaseModel):
     sla_penalty: float = Field(default=0, ge=0, le=100000, description="Penalty per SLA breach. Enter 0 if none.")
     sla_breaches_year: int = Field(default=0, ge=0, le=100, description="Expected breaches per year. Enter 0 if none.")
     
-    # Costs
+    # Costs (True Cost of Ownership)
     current_tool_cost: float = Field(default=0, ge=0, le=50000, description="Current annual tool costs. Enter 0 if none.")
-    implementation_cost: float = Field(..., ge=1000, le=500000, description="One-time automation cost")
+    implementation_cost: float = Field(..., ge=0, le=500000, description="One-time setup/development cost")
+    software_license_cost: float = Field(default=0, ge=0, le=100000, description="Annual software license/subscription cost")
+    annual_maintenance_cost: float = Field(default=0, ge=0, le=50000, description="Annual maintenance and support cost")
     
     # Growth
     volume_growth: float = Field(default=0, ge=0, le=100, description="Expected annual volume growth %. Enter 0 if none.")
@@ -85,13 +87,18 @@ class ROIOutput(BaseModel):
     
     # Automation projections
     automation_savings_percent: float
-    annual_savings: float
+    annual_savings: float  # Gross savings before recurring costs
+    
+    # True Cost of Ownership
+    implementation_cost: float  # One-time upfront cost
+    annual_automation_cost: float  # Recurring: license + maintenance
+    net_annual_savings: float  # Gross savings - recurring costs
+    total_cost_of_ownership: float  # 5-year total: implementation + (recurring * 5)
     
     # ROI metrics
-    implementation_cost: float
     payback_months: float
     roi_percentage: float
-    five_year_savings: float
+    five_year_savings: float  # Net savings over 5 years
     
     # Recommendation
     priority_score: str

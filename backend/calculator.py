@@ -108,11 +108,16 @@ def calculate_roi(inputs: ROIInput) -> ROIOutput:
     
     savings_percent = (annual_savings / total_current_cost * 100) if total_current_cost > 0 else 0
     
-    # ROI metrics
-    payback_months = _calculate_payback(inputs.implementation_cost, annual_savings)
-    roi_percentage = _calculate_roi_percentage(annual_savings, inputs.implementation_cost)
+    # True Cost of Ownership calculations
+    annual_automation_cost = inputs.software_license_cost + inputs.annual_maintenance_cost
+    net_annual_savings = annual_savings - annual_automation_cost
+    total_cost_of_ownership = inputs.implementation_cost + (annual_automation_cost * 5)
+    
+    # ROI metrics (using net savings for accurate calculations)
+    payback_months = _calculate_payback(inputs.implementation_cost, net_annual_savings)
+    roi_percentage = _calculate_roi_percentage(net_annual_savings, inputs.implementation_cost)
     five_year_savings = _calculate_five_year_value(
-        annual_savings,
+        net_annual_savings,  # Use net savings 
         inputs.implementation_cost,
         inputs.volume_growth
     )
@@ -121,7 +126,7 @@ def calculate_roi(inputs: ROIInput) -> ROIOutput:
     priority_score, recommendation = _generate_recommendation(
         payback_months,
         roi_percentage,
-        annual_savings,
+        net_annual_savings,  # Use net savings
         config
     )
     
@@ -138,6 +143,9 @@ def calculate_roi(inputs: ROIInput) -> ROIOutput:
         automation_savings_percent=round(savings_percent, 1),
         annual_savings=round(annual_savings, 2),
         implementation_cost=round(inputs.implementation_cost, 2),
+        annual_automation_cost=round(annual_automation_cost, 2),
+        net_annual_savings=round(net_annual_savings, 2),
+        total_cost_of_ownership=round(total_cost_of_ownership, 2),
         payback_months=round(payback_months, 1),
         roi_percentage=round(roi_percentage, 1),
         five_year_savings=round(five_year_savings, 2),
