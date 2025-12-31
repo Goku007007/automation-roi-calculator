@@ -1,7 +1,7 @@
 /**
  * app.js - Frontend JavaScript for Automation ROI Calculator
  * 
- * Handles form submission, API communication, and results display.
+ * Handles form submission, API communication, results display, and charts.
  * Automatically detects if auth is required and handles tokens accordingly.
  */
 
@@ -11,6 +11,10 @@ const API_URL = "http://localhost:8007";
 // Store the access token (only used if auth is required)
 let accessToken = null;
 let authRequired = false;
+
+// Chart instances (to destroy before recreating)
+let savingsChart = null;
+let comparisonChart = null;
 
 // Get form and results elements
 const form = document.getElementById("roi-form");
@@ -114,18 +118,20 @@ form.addEventListener("submit", async (e) => {
 
 
 /**
- * Display results on the page
+ * Display results on the page with charts
  */
 function displayResults(data) {
     resultsContent.innerHTML = `
         <div class="result-card">
             <h3>${data.process_name}</h3>
+            
+            <!-- Metrics Grid -->
             <div class="metrics">
                 <div class="metric">
                     <span class="label">Annual Labor Cost</span>
                     <span class="value">$${data.annual_labor_cost.toLocaleString()}</span>
                 </div>
-                <div class="metric">
+                <div class="metric highlight-savings">
                     <span class="label">Annual Savings</span>
                     <span class="value">$${data.annual_savings.toLocaleString()}</span>
                 </div>
@@ -133,7 +139,7 @@ function displayResults(data) {
                     <span class="label">Payback Period</span>
                     <span class="value">${data.payback_months} months</span>
                 </div>
-                <div class="metric">
+                <div class="metric highlight-roi">
                     <span class="label">ROI</span>
                     <span class="value">${data.roi_percentage}%</span>
                 </div>
@@ -146,11 +152,166 @@ function displayResults(data) {
                     <span class="value">${data.priority_score}</span>
                 </div>
             </div>
+            
+            <!-- Charts Section -->
+            <div class="charts-container">
+                <div class="chart-wrapper">
+                    <h4>Cost vs Savings</h4>
+                    <canvas id="comparison-chart"></canvas>
+                </div>
+                <div class="chart-wrapper">
+                    <h4>5-Year Projection</h4>
+                    <canvas id="savings-chart"></canvas>
+                </div>
+            </div>
+            
             <p class="recommendation">${data.recommendation}</p>
-            <button onclick="downloadPDF()">Download PDF</button>
+            <button onclick="downloadPDF()">Download PDF Report</button>
         </div>
     `;
+
     resultsSection.classList.remove("hidden");
+
+    // Create charts after DOM is updated
+    setTimeout(() => {
+        createComparisonChart(data);
+        createSavingsChart(data);
+    }, 100);
+}
+
+
+/**
+ * Create comparison bar chart (Cost vs Savings)
+ */
+function createComparisonChart(data) {
+    const ctx = document.getElementById('comparison-chart');
+    if (!ctx) return;
+
+    // Destroy existing chart
+    if (comparisonChart) {
+        comparisonChart.destroy();
+    }
+
+    comparisonChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Implementation Cost', 'Annual Savings', 'Year 1 Net'],
+            datasets: [{
+                label: 'Amount ($)',
+                data: [
+                    data.implementation_cost,
+                    data.annual_savings,
+                    data.annual_savings - data.implementation_cost
+                ],
+                backgroundColor: [
+                    'rgba(239, 68, 68, 0.7)',   // Red for cost
+                    'rgba(16, 185, 129, 0.7)',  // Green for savings
+                    data.annual_savings > data.implementation_cost
+                        ? 'rgba(59, 130, 246, 0.7)'   // Blue if positive
+                        : 'rgba(245, 158, 11, 0.7)'   // Amber if negative
+                ],
+                borderColor: [
+                    'rgb(239, 68, 68)',
+                    'rgb(16, 185, 129)',
+                    data.annual_savings > data.implementation_cost
+                        ? 'rgb(59, 130, 246)'
+                        : 'rgb(245, 158, 11)'
+                ],
+                borderWidth: 2,
+                borderRadius: 6,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            return '$' + context.raw.toLocaleString();
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function (value) {
+                            return '$' + value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+
+/**
+ * Create 5-year savings projection line chart
+ */
+function createSavingsChart(data) {
+    const ctx = document.getElementById('savings-chart');
+    if (!ctx) return;
+
+    // Destroy existing chart
+    if (savingsChart) {
+        savingsChart.destroy();
+    }
+
+    // Calculate cumulative savings over 5 years
+    const years = ['Year 0', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'];
+    const cumulativeSavings = [0];
+    const annualSavings = data.annual_savings;
+
+    for (let i = 1; i <= 5; i++) {
+        const cumulative = (annualSavings * i) - data.implementation_cost;
+        cumulativeSavings.push(cumulative);
+    }
+
+    savingsChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: years,
+            datasets: [{
+                label: 'Cumulative Net Savings',
+                data: cumulativeSavings,
+                borderColor: 'rgb(59, 130, 246)',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                fill: true,
+                tension: 0.3,
+                pointBackgroundColor: 'rgb(59, 130, 246)',
+                pointRadius: 5,
+                pointHoverRadius: 7,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const value = context.raw;
+                            return (value >= 0 ? '+' : '') + '$' + value.toLocaleString();
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    ticks: {
+                        callback: function (value) {
+                            return '$' + value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
 }
 
 

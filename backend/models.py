@@ -88,6 +88,7 @@ class ROIOutput(BaseModel):
     annual_savings: float
     
     # ROI metrics
+    implementation_cost: float
     payback_months: float
     roi_percentage: float
     five_year_savings: float

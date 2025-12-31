@@ -137,6 +137,7 @@ def calculate_roi(inputs: ROIInput) -> ROIOutput:
         total_current_cost=round(total_current_cost, 2),
         automation_savings_percent=round(savings_percent, 1),
         annual_savings=round(annual_savings, 2),
+        implementation_cost=round(inputs.implementation_cost, 2),
         payback_months=round(payback_months, 1),
         roi_percentage=round(roi_percentage, 1),
         five_year_savings=round(five_year_savings, 2),
