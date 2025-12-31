@@ -6,7 +6,7 @@ export default function Business() {
         name: '',
         email: '',
         company: '',
-        employees: '',
+        employees: '11-50',
         message: '',
     });
     const [status, setStatus] = useState(null); // null, 'submitting', 'success', 'error'

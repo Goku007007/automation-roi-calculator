@@ -92,7 +92,14 @@
 }
 
 .featureIcon {
-    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--accent);
+    border-radius: var(--radius-md);
     margin-bottom: var(--spacing-md);
 }
 
