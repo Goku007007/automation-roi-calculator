@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import styles from './ProjectList.module.css';
 
 function formatDate(dateString) {
@@ -24,8 +23,12 @@ export default function ProjectList({ projects, onLoad, onDelete, onDuplicate })
     if (!projects || projects.length === 0) {
         return (
             <div className={styles.empty}>
-                <p>No saved projects yet</p>
-                <p className={styles.hint}>Calculate ROI and save to build your library</p>
+                <div className={styles.emptyIcon}>📊</div>
+                <h4>No projects yet</h4>
+                <p>Run your first calculation and save it here to build your library.</p>
+                <a href="/calculator" className={styles.emptyBtn}>
+                    Start Calculating →
+                </a>
             </div>
         );
     }
@@ -62,6 +65,7 @@ export default function ProjectList({ projects, onLoad, onDelete, onDuplicate })
                             className={styles.actionBtn}
                             onClick={() => onDuplicate(project.id)}
                             title="Duplicate"
+                            aria-label="Duplicate project"
                         >
                             ⧉
                         </button>
@@ -69,6 +73,7 @@ export default function ProjectList({ projects, onLoad, onDelete, onDuplicate })
                             className={`${styles.actionBtn} ${styles.deleteBtn}`}
                             onClick={() => onDelete(project.id)}
                             title="Delete"
+                            aria-label="Delete project"
                         >
                             ×
                         </button>

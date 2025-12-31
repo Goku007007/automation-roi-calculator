@@ -37,17 +37,26 @@ export default function CostSimulator({ selectedTool }) {
             <div className={styles.section}>
                 <label className={styles.label}>
                     Monthly Tasks/Operations
-                    <span className={styles.value}>{monthlyTasks.toLocaleString()}</span>
                 </label>
-                <input
-                    type="range"
-                    className={styles.slider}
-                    min="100"
-                    max="100000"
-                    step="100"
-                    value={monthlyTasks}
-                    onChange={(e) => setMonthlyTasks(Number(e.target.value))}
-                />
+                <div className={styles.sliderWithInput}>
+                    <input
+                        type="range"
+                        className={styles.slider}
+                        min="100"
+                        max="100000"
+                        step="100"
+                        value={monthlyTasks}
+                        onChange={(e) => setMonthlyTasks(Number(e.target.value))}
+                    />
+                    <input
+                        type="number"
+                        className={styles.numberInput}
+                        min="100"
+                        max="100000"
+                        value={monthlyTasks}
+                        onChange={(e) => setMonthlyTasks(Math.max(100, Math.min(100000, Number(e.target.value) || 100)))}
+                    />
+                </div>
                 <div className={styles.rangeLabels}>
                     <span>100</span>
                     <span>100K</span>

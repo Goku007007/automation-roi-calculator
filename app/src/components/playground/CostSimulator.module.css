@@ -30,7 +30,7 @@
 }
 
 .slider {
-    width: 100%;
+    flex: 1;
     -webkit-appearance: none;
     height: 6px;
     border-radius: 3px;
@@ -45,6 +45,30 @@
     border-radius: 50%;
     background: var(--accent);
     cursor: pointer;
+}
+
+.sliderWithInput {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: center;
+}
+
+.numberInput {
+    width: 100px;
+    padding: var(--spacing-sm);
+    font-size: 0.875rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    text-align: right;
+    font-family: 'IBM Plex Serif', serif;
+    font-weight: 600;
+}
+
+.numberInput::-webkit-inner-spin-button,
+.numberInput::-webkit-outer-spin-button {
+    opacity: 1;
 }
 
 .rangeLabels {

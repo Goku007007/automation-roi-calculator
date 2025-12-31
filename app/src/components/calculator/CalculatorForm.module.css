@@ -4,6 +4,12 @@
     gap: var(--spacing-md);
 }
 
+.requiredLegend {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0;
+}
+
 .formGroup {
     display: flex;
     flex-direction: column;
@@ -17,12 +23,19 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
+    flex-wrap: wrap;
 }
 
 .hint {
     font-size: 0.75rem;
     color: var(--text-muted);
     font-weight: 400;
+}
+
+.helper {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 2px;
 }
 
 .optional {
@@ -42,17 +55,48 @@
     border-radius: var(--radius-md);
     background: var(--bg-primary);
     color: var(--text-primary);
-    transition: border-color var(--transition-fast);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .formGroup input:focus,
 .formGroup select:focus {
     outline: none;
     border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 .formGroup input::placeholder {
     color: var(--text-muted);
+}
+
+/* Validation States */
+.inputError {
+    border-color: var(--danger) !important;
+}
+
+.inputError:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+}
+
+.inputValid {
+    border-color: var(--success) !important;
+}
+
+.inputValid:focus {
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15) !important;
+}
+
+.error {
+    font-size: 0.75rem;
+    color: var(--danger);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.error::before {
+    content: "⚠";
+    font-size: 0.7rem;
 }
 
 .row {
@@ -156,6 +200,14 @@
     border: none;
 }
 
+.sliderLabels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: var(--spacing-xs);
+}
+
 /* Submit Button */
 .submitBtn {
     margin-top: var(--spacing-md);
@@ -168,6 +220,11 @@
     font-weight: 600;
     cursor: pointer;
     transition: background-color var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    min-height: 48px;
 }
 
 .submitBtn:hover:not(:disabled) {
@@ -175,6 +232,6 @@
 }
 
 .submitBtn:disabled {
-    opacity: 0.6;
+    opacity: 0.7;
     cursor: not-allowed;
 }

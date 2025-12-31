@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Spinner from '../ui/Spinner';
 import styles from './CalculatorForm.module.css';
 
 const FREQUENCIES = [
@@ -26,11 +27,39 @@ const defaultFormData = {
     expected_labor_reduction: 70,
 };
 
+// Validation rules
+const validate = (data) => {
+    const errors = {};
+
+    if (!data.process_name.trim()) {
+        errors.process_name = 'Process name is required';
+    }
+    if (!data.runs_per_period || parseInt(data.runs_per_period) < 1) {
+        errors.runs_per_period = 'Enter at least 1 run';
+    }
+    if (!data.hours_per_run || parseFloat(data.hours_per_run) < 0.1) {
+        errors.hours_per_run = 'Enter time in hours (min 0.1)';
+    }
+    if (!data.staff_count || parseInt(data.staff_count) < 1) {
+        errors.staff_count = 'Enter at least 1 person';
+    }
+    if (!data.hourly_rate || parseFloat(data.hourly_rate) < 1) {
+        errors.hourly_rate = 'Enter hourly rate';
+    }
+    if (!data.implementation_cost && data.implementation_cost !== '0') {
+        errors.implementation_cost = 'Enter setup cost (or 0)';
+    }
+
+    return errors;
+};
+
 export default function CalculatorForm({ onSubmit, isLoading, initialData }) {
     const [formData, setFormData] = useState(defaultFormData);
     const [showAdvanced, setShowAdvanced] = useState(false);
+    const [errors, setErrors] = useState({});
+    const [touched, setTouched] = useState({});
 
-    // Load initial data when provided (e.g., from saved project)
+    // Load initial data when provided
     useEffect(() => {
         if (initialData) {
             setFormData({
@@ -47,16 +76,47 @@ export default function CalculatorForm({ onSubmit, isLoading, initialData }) {
                 error_fix_cost: initialData.error_fix_cost?.toString() || '0',
                 expected_labor_reduction: initialData.expected_labor_reduction || 70,
             });
+            setErrors({});
+            setTouched({});
         }
     }, [initialData]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+
+        // Clear error when user starts typing
+        if (errors[name]) {
+            setErrors(prev => ({ ...prev, [name]: null }));
+        }
+    };
+
+    const handleBlur = (e) => {
+        const { name } = e.target;
+        setTouched(prev => ({ ...prev, [name]: true }));
+
+        // Validate single field on blur
+        const fieldErrors = validate(formData);
+        if (fieldErrors[name]) {
+            setErrors(prev => ({ ...prev, [name]: fieldErrors[name] }));
+        }
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        // Validate all fields
+        const validationErrors = validate(formData);
+        setErrors(validationErrors);
+        setTouched(Object.keys(formData).reduce((acc, key) => ({ ...acc, [key]: true }), {}));
+
+        if (Object.keys(validationErrors).length > 0) {
+            // Focus first error field
+            const firstErrorField = Object.keys(validationErrors)[0];
+            document.getElementById(firstErrorField)?.focus();
+            return;
+        }
+
         onSubmit({
             ...formData,
             runs_per_period: parseInt(formData.runs_per_period) || 0,
@@ -72,25 +132,41 @@ export default function CalculatorForm({ onSubmit, isLoading, initialData }) {
         });
     };
 
+    const getFieldClass = (name) => {
+        if (touched[name] && errors[name]) return styles.inputError;
+        if (touched[name] && !errors[name] && formData[name]) return styles.inputValid;
+        return '';
+    };
+
     return (
-        <form className={styles.form} onSubmit={handleSubmit}>
+        <form className={styles.form} onSubmit={handleSubmit} noValidate>
+            <p className={styles.requiredLegend}>* Required fields</p>
+
             {/* Process Details */}
             <div className={styles.formGroup}>
-                <label htmlFor="process_name">Process Name</label>
+                <label htmlFor="process_name">
+                    What process are you automating? *
+                </label>
                 <input
                     type="text"
                     id="process_name"
                     name="process_name"
                     value={formData.process_name}
                     onChange={handleChange}
-                    placeholder="e.g. Invoice Processing"
-                    required
+                    onBlur={handleBlur}
+                    placeholder="e.g. Invoice Processing, Lead Routing"
+                    className={getFieldClass('process_name')}
+                    aria-invalid={!!errors.process_name}
+                    aria-describedby={errors.process_name ? 'process_name_error' : undefined}
                 />
+                {touched.process_name && errors.process_name && (
+                    <span id="process_name_error" className={styles.error}>{errors.process_name}</span>
+                )}
             </div>
 
             <div className={styles.row}>
                 <div className={styles.formGroup}>
-                    <label htmlFor="frequency">Frequency</label>
+                    <label htmlFor="frequency">How often does it run?</label>
                     <select
                         id="frequency"
                         name="frequency"
@@ -104,55 +180,72 @@ export default function CalculatorForm({ onSubmit, isLoading, initialData }) {
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label htmlFor="runs_per_period">Runs per Period</label>
+                    <label htmlFor="runs_per_period">Runs per period *</label>
                     <input
                         type="number"
                         id="runs_per_period"
                         name="runs_per_period"
                         value={formData.runs_per_period}
                         onChange={handleChange}
+                        onBlur={handleBlur}
                         placeholder="e.g. 20"
                         min="1"
-                        required
+                        className={getFieldClass('runs_per_period')}
+                        aria-invalid={!!errors.runs_per_period}
                     />
+                    <span className={styles.helper}>Times per {formData.frequency.replace('_', ' ')}</span>
+                    {touched.runs_per_period && errors.runs_per_period && (
+                        <span className={styles.error}>{errors.runs_per_period}</span>
+                    )}
                 </div>
             </div>
 
             <div className={styles.row}>
                 <div className={styles.formGroup}>
-                    <label htmlFor="hours_per_run">Hours per Run</label>
+                    <label htmlFor="hours_per_run">Time per run (hours) *</label>
                     <input
                         type="number"
                         id="hours_per_run"
                         name="hours_per_run"
                         value={formData.hours_per_run}
                         onChange={handleChange}
+                        onBlur={handleBlur}
                         placeholder="e.g. 0.5"
                         step="0.1"
                         min="0.1"
-                        required
+                        className={getFieldClass('hours_per_run')}
+                        aria-invalid={!!errors.hours_per_run}
                     />
+                    <span className={styles.helper}>Include all manual steps</span>
+                    {touched.hours_per_run && errors.hours_per_run && (
+                        <span className={styles.error}>{errors.hours_per_run}</span>
+                    )}
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label htmlFor="staff_count">Staff Count</label>
+                    <label htmlFor="staff_count">People involved *</label>
                     <input
                         type="number"
                         id="staff_count"
                         name="staff_count"
                         value={formData.staff_count}
                         onChange={handleChange}
+                        onBlur={handleBlur}
                         placeholder="e.g. 3"
                         min="1"
-                        required
+                        className={getFieldClass('staff_count')}
+                        aria-invalid={!!errors.staff_count}
                     />
+                    <span className={styles.helper}>Who touches this process?</span>
+                    {touched.staff_count && errors.staff_count && (
+                        <span className={styles.error}>{errors.staff_count}</span>
+                    )}
                 </div>
             </div>
 
             <div className={styles.formGroup}>
                 <label htmlFor="hourly_rate">
-                    Hourly Rate ($)
-                    <span className={styles.hint}>Include benefits & overhead</span>
+                    Fully-loaded hourly rate ($) *
                 </label>
                 <input
                     type="number"
@@ -160,10 +253,16 @@ export default function CalculatorForm({ onSubmit, isLoading, initialData }) {
                     name="hourly_rate"
                     value={formData.hourly_rate}
                     onChange={handleChange}
+                    onBlur={handleBlur}
                     placeholder="e.g. 35"
-                    min="15"
-                    required
+                    min="1"
+                    className={getFieldClass('hourly_rate')}
+                    aria-invalid={!!errors.hourly_rate}
                 />
+                <span className={styles.helper}>Include benefits & overhead</span>
+                {touched.hourly_rate && errors.hourly_rate && (
+                    <span className={styles.error}>{errors.hourly_rate}</span>
+                )}
             </div>
 
             {/* Automation Investment Section */}
@@ -171,23 +270,29 @@ export default function CalculatorForm({ onSubmit, isLoading, initialData }) {
                 <h3>Automation Investment</h3>
 
                 <div className={styles.formGroup}>
-                    <label htmlFor="implementation_cost">One-time Setup Cost ($)</label>
+                    <label htmlFor="implementation_cost">One-time setup cost ($) *</label>
                     <input
                         type="number"
                         id="implementation_cost"
                         name="implementation_cost"
                         value={formData.implementation_cost}
                         onChange={handleChange}
+                        onBlur={handleBlur}
                         placeholder="e.g. 25000"
                         min="0"
-                        required
+                        className={getFieldClass('implementation_cost')}
+                        aria-invalid={!!errors.implementation_cost}
                     />
+                    <span className={styles.helper}>Development, training, migration</span>
+                    {touched.implementation_cost && errors.implementation_cost && (
+                        <span className={styles.error}>{errors.implementation_cost}</span>
+                    )}
                 </div>
 
                 <div className={styles.row}>
                     <div className={styles.formGroup}>
                         <label htmlFor="software_license_cost">
-                            Annual License ($)
+                            Annual license ($)
                             <span className={styles.optional}>optional</span>
                         </label>
                         <input
@@ -203,7 +308,7 @@ export default function CalculatorForm({ onSubmit, isLoading, initialData }) {
 
                     <div className={styles.formGroup}>
                         <label htmlFor="annual_maintenance_cost">
-                            Annual Maintenance ($)
+                            Annual maintenance ($)
                             <span className={styles.optional}>optional</span>
                         </label>
                         <input
@@ -229,7 +334,7 @@ export default function CalculatorForm({ onSubmit, isLoading, initialData }) {
 
                 <div className={styles.row}>
                     <div className={styles.formGroup}>
-                        <label htmlFor="error_rate">Error Rate (%)</label>
+                        <label htmlFor="error_rate">Error rate (%)</label>
                         <input
                             type="number"
                             id="error_rate"
@@ -241,10 +346,11 @@ export default function CalculatorForm({ onSubmit, isLoading, initialData }) {
                             max="50"
                             step="0.1"
                         />
+                        <span className={styles.helper}>Current manual error rate</span>
                     </div>
 
                     <div className={styles.formGroup}>
-                        <label htmlFor="error_fix_cost">Cost per Error ($)</label>
+                        <label htmlFor="error_fix_cost">Cost per error ($)</label>
                         <input
                             type="number"
                             id="error_fix_cost"
@@ -254,12 +360,13 @@ export default function CalculatorForm({ onSubmit, isLoading, initialData }) {
                             placeholder="e.g. 50"
                             min="0"
                         />
+                        <span className={styles.helper}>Rework, fines, lost business</span>
                     </div>
                 </div>
 
                 <div className={styles.formGroup}>
                     <label htmlFor="expected_labor_reduction">
-                        Expected Labor Reduction: <strong>{formData.expected_labor_reduction}%</strong>
+                        Expected labor reduction: <strong>{formData.expected_labor_reduction}%</strong>
                     </label>
                     <input
                         type="range"
@@ -271,11 +378,22 @@ export default function CalculatorForm({ onSubmit, isLoading, initialData }) {
                         max="100"
                         className={styles.slider}
                     />
+                    <div className={styles.sliderLabels}>
+                        <span>Conservative (10%)</span>
+                        <span>Aggressive (100%)</span>
+                    </div>
                 </div>
             </details>
 
             <button type="submit" className={styles.submitBtn} disabled={isLoading}>
-                {isLoading ? 'Calculating...' : 'Calculate ROI'}
+                {isLoading ? (
+                    <>
+                        <Spinner size="sm" light />
+                        <span>Calculating...</span>
+                    </>
+                ) : (
+                    'Show My Results'
+                )}
             </button>
         </form>
     );

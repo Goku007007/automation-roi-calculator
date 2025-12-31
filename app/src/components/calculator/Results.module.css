@@ -51,6 +51,8 @@
     padding: var(--spacing-md);
     border-radius: var(--radius-md);
     border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
 }
 
 .metric.highlight {
@@ -61,6 +63,19 @@
 .metric.highlightBlue {
     background: rgba(59, 130, 246, 0.1);
     border-color: var(--accent);
+}
+
+/* Benchmark status colors */
+.metric.excellent {
+    border-color: var(--success);
+}
+
+.metric.good {
+    border-color: var(--accent);
+}
+
+.metric.low {
+    border-color: var(--warning);
 }
 
 .label {
@@ -77,6 +92,23 @@
     font-size: 1.25rem;
     font-weight: 600;
     color: var(--text-primary);
+}
+
+.helper {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.benchmark {
+    font-size: 0.7rem;
+    color: var(--success);
+    margin-top: 4px;
+    font-weight: 500;
+}
+
+.metric.low .benchmark {
+    color: var(--warning);
 }
 
 /* Recommendation */
@@ -100,6 +132,66 @@
     line-height: 1.6;
 }
 
+/* Methodology */
+.methodologyBtn {
+    margin-top: var(--spacing-md);
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 0.875rem;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+}
+
+.methodologyBtn:hover {
+    color: var(--accent-hover);
+}
+
+.methodology {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+}
+
+.methodology h4 {
+    font-size: 0.875rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.methodology ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.methodology li {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    padding: var(--spacing-xs) 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.methodology li:last-child {
+    border-bottom: none;
+}
+
+.methodology code {
+    font-family: 'IBM Plex Mono', monospace;
+    background: var(--bg-tertiary);
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+.disclaimer {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: var(--spacing-md);
+    margin-bottom: 0;
+}
+
 /* Actions */
 .actions {
     margin-top: var(--spacing-lg);
@@ -117,6 +209,9 @@
     font-weight: 500;
     cursor: pointer;
     transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
 }
 
 .downloadBtn:hover:not(:disabled) {

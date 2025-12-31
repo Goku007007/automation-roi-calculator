@@ -11,15 +11,15 @@ export default function Home() {
                     <span className={styles.accent}>Automation ROI</span>
                 </h1>
                 <p className={styles.subtitle}>
-                    Make data-driven decisions for your automation investments.
+                    See exactly how much you'll save—no spreadsheets required.
                     Build credible business cases with transparent assumptions.
                 </p>
                 <div className={styles.cta}>
                     <Link to="/calculator" className={styles.primaryBtn}>
-                        Start Calculating
+                        Calculate My ROI
                     </Link>
                     <Link to="/playground" className={styles.secondaryBtn}>
-                        Try Playground
+                        Explore Tool Costs
                     </Link>
                 </div>
             </section>
@@ -29,22 +29,22 @@ export default function Home() {
                 <div className={styles.feature}>
                     <div className={styles.featureIcon}>📊</div>
                     <h3>ROI Calculator</h3>
-                    <p>Calculate payback, savings, and compare scenarios with transparent formulas.</p>
+                    <p>Calculate payback, savings, and compare Base/Best/Worst scenarios with transparent formulas.</p>
                 </div>
                 <div className={styles.feature}>
-                    <div className={styles.featureIcon}>🎮</div>
-                    <h3>Playground</h3>
-                    <p>Simulate automation scenarios with common tools and estimate costs.</p>
+                    <div className={styles.featureIcon}>⚡</div>
+                    <h3>Cost Playground</h3>
+                    <p>Estimate monthly costs for Zapier, Make, n8n, and AI models in 30 seconds.</p>
                 </div>
                 <div className={styles.feature}>
-                    <div className={styles.featureIcon}>📚</div>
-                    <h3>Documentation</h3>
-                    <p>Complete reference for tool costs, AI models, and pricing structures.</p>
+                    <div className={styles.featureIcon}>📖</div>
+                    <h3>Pricing Reference</h3>
+                    <p>Complete reference for automation tool pricing and AI model costs.</p>
                 </div>
                 <div className={styles.feature}>
-                    <div className={styles.featureIcon}>💼</div>
-                    <h3>For Business</h3>
-                    <p>Need custom automation? We help build solutions tailored to your needs.</p>
+                    <div className={styles.featureIcon}>🏢</div>
+                    <h3>Enterprise Help</h3>
+                    <p>Need custom automation? Get tailored solutions from our team.</p>
                 </div>
             </section>
 

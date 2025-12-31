@@ -15,7 +15,7 @@
     flex: 1;
     padding: var(--spacing-sm) var(--spacing-md);
     background: transparent;
-    border: none;
+    border: 2px solid transparent;
     border-radius: var(--radius-md);
     font-size: 0.875rem;
     font-weight: 500;
@@ -26,6 +26,7 @@
     align-items: center;
     justify-content: center;
     gap: var(--spacing-xs);
+    position: relative;
 }
 
 .tab:hover {
@@ -33,51 +34,62 @@
     background: var(--bg-tertiary);
 }
 
+/* Active Tab - Strong visual */
 .tab.active {
     background: var(--bg-primary);
     color: var(--text-primary);
+    border-color: var(--accent);
     box-shadow: var(--shadow-sm);
 }
 
-.tab.hasData .label {
+/* Has Data - Show green indicator */
+.tab.hasData {
     color: var(--success);
 }
 
-.tab.active.hasData .label {
+.tab.hasData::after {
+    content: "";
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    background: var(--success);
+    border-radius: 50%;
+}
+
+.tab.active.hasData {
     color: var(--text-primary);
 }
 
 .badge {
     font-size: 0.7rem;
     color: var(--success);
+    font-weight: 600;
 }
 
 .hint {
     margin-top: var(--spacing-md);
     padding: var(--spacing-md);
-    background: var(--bg-secondary);
+    background: rgba(59, 130, 246, 0.05);
     border-radius: var(--radius-md);
-    border: 1px dashed var(--border);
+    border: 1px dashed var(--accent);
 }
 
 .hint p {
     margin: 0;
     font-size: 0.875rem;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     text-align: center;
+}
+
+.hint strong {
+    color: var(--accent);
 }
 
 @media (max-width: 480px) {
     .tab {
         padding: var(--spacing-xs) var(--spacing-sm);
-        font-size: 0.8rem;
-    }
-
-    .label {
-        display: none;
-    }
-
-    .tab::before {
-        content: attr(data-short);
+        font-size: 0.75rem;
     }
 }
