@@ -1,24 +1,107 @@
 .page {
     padding-top: calc(var(--header-height) + var(--spacing-xl));
     min-height: 100vh;
+    padding-bottom: var(--spacing-2xl);
 }
 
 .container {
-    max-width: 1000px;
+    max-width: 900px;
     margin: 0 auto;
-    padding: var(--spacing-xl) var(--spacing-lg);
+    padding: 0 var(--spacing-lg);
+}
+
+.header {
+    margin-bottom: var(--spacing-xl);
+}
+
+.header h1 {
+    margin-bottom: var(--spacing-sm);
 }
 
 .subtitle {
     color: var(--text-secondary);
+    margin: 0;
+}
+
+/* Sections */
+.section {
     margin-bottom: var(--spacing-xl);
 }
 
-.placeholder {
-    padding: var(--spacing-2xl);
-    background: var(--bg-secondary);
-    border: 1px dashed var(--border);
-    border-radius: var(--radius-lg);
-    text-align: center;
+.sectionTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
     color: var(--text-muted);
+}
+
+/* Tool Grid */
+.toolGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+}
+
+/* Pricing Details */
+.details {
+    padding: var(--spacing-lg);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+}
+
+.details h3 {
+    font-size: 1rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.tierTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.tierTable th,
+.tierTable td {
+    padding: var(--spacing-sm) var(--spacing-md);
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.tierTable th {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.tierTable td:last-child {
+    font-family: 'IBM Plex Serif', serif;
+    font-weight: 500;
+}
+
+.pricingLink {
+    display: inline-block;
+    margin-top: var(--spacing-md);
+    font-size: 0.875rem;
+    color: var(--accent);
+}
+
+.pricingLink:hover {
+    text-decoration: underline;
+}
+
+/* Disclaimer */
+.disclaimer {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--border);
+}
+
+@media (max-width: 600px) {
+    .toolGrid {
+        grid-template-columns: 1fr;
+    }
 }
