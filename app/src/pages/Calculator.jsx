@@ -4,6 +4,9 @@ import Results from '../components/calculator/Results';
 import ProjectList from '../components/calculator/ProjectList';
 import ScenarioTabs from '../components/calculator/ScenarioTabs';
 import ScenarioCompare from '../components/calculator/ScenarioCompare';
+import { ResultsSkeleton } from '../components/ui/Skeleton';
+import Button from '../components/ui/Button';
+import { XIcon, FolderIcon } from '../components/ui/Icons';
 import { useProjects } from '../hooks/useProjects';
 import { calculateROI, generatePDF } from '../utils/api';
 import styles from './Calculator.module.css';
@@ -129,12 +132,14 @@ export default function Calculator() {
                 <aside className={`${styles.sidebar} ${showProjects ? styles.sidebarOpen : ''}`}>
                     <div className={styles.sidebarHeader}>
                         <h3>Saved Projects</h3>
-                        <button
-                            className={styles.closeBtn}
+                        <Button
+                            variant="ghost"
+                            size="sm"
                             onClick={() => setShowProjects(false)}
+                            aria-label="Close sidebar"
                         >
-                            ×
-                        </button>
+                            <XIcon size={18} />
+                        </Button>
                     </div>
                     <ProjectList
                         projects={projects}
@@ -154,12 +159,14 @@ export default function Calculator() {
                                     Calculate and compare scenarios for your automation projects.
                                 </p>
                             </div>
-                            <button
-                                className={styles.projectsBtn}
+                            <Button
+                                variant="secondary"
+                                size="sm"
                                 onClick={() => setShowProjects(!showProjects)}
+                                icon={<FolderIcon size={16} />}
                             >
                                 Projects ({projects.length})
-                            </button>
+                            </Button>
                         </div>
 
                         {/* Scenario Tabs */}
@@ -182,7 +189,11 @@ export default function Calculator() {
                             initialData={loadedInputs}
                         />
 
-                        {results && (
+                        {/* Loading Skeleton */}
+                        {isLoading && <ResultsSkeleton />}
+
+                        {/* Results */}
+                        {!isLoading && results && (
                             <>
                                 <Results
                                     data={results}
@@ -192,19 +203,19 @@ export default function Calculator() {
 
                                 {/* Save Actions */}
                                 <div className={styles.saveActions}>
-                                    <button
-                                        className={styles.saveBtn}
+                                    <Button
+                                        variant="secondary"
                                         onClick={handleSaveProject}
                                     >
                                         Save Project
-                                    </button>
+                                    </Button>
                                     {Object.values(scenarios).some(s => s !== null) && (
-                                        <button
-                                            className={styles.clearBtn}
+                                        <Button
+                                            variant="ghost"
                                             onClick={handleClearScenarios}
                                         >
                                             Clear All
-                                        </button>
+                                        </Button>
                                     )}
                                 </div>
                             </>
