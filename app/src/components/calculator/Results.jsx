@@ -43,7 +43,7 @@ export default function Results({ data, onDownloadPDF, isDownloading }) {
     }[data.priority_score] || '';
 
     const roiBenchmark = getBenchmarkStatus('roi', data.roi_percentage);
-    const paybackBenchmark = getBenchmarkStatus('payback', data.payback_months);
+    const paybackBenchmark = getBenchmarkStatus('payback', data.payback_period_months || data.payback_months || 0);
 
     return (
         <div className={styles.results}>
@@ -68,7 +68,7 @@ export default function Results({ data, onDownloadPDF, isDownloading }) {
                 </div>
                 <div className={`${styles.metric} ${styles[paybackBenchmark?.status]}`}>
                     <span className={styles.label}>Payback Period</span>
-                    <span className={styles.value}>{data.payback_months} mo</span>
+                    <span className={styles.value}>{data.payback_period_months || data.payback_months || 0} mo</span>
                     <span className={styles.benchmark}>{paybackBenchmark?.text}</span>
                 </div>
                 <div className={`${styles.metric} ${styles.highlightBlue} ${styles[roiBenchmark?.status]}`}>
