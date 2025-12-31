@@ -42,13 +42,13 @@
 .list {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-md);
 }
 
 .project {
     display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
+    flex-direction: column;
+    gap: var(--spacing-sm);
     padding: var(--spacing-md);
     background: var(--bg-secondary);
     border: 1px solid var(--border);
@@ -57,55 +57,67 @@
 }
 
 .project:hover {
-    border-color: var(--text-muted);
+    border-color: var(--accent);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .info {
-    flex: 1;
-    min-width: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
 }
 
 .name {
     font-size: 0.9rem;
-    font-weight: 500;
+    font-weight: 600;
     margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    color: var(--text-primary);
+    word-break: break-word;
 }
 
 .date {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .preview {
     display: flex;
-    gap: var(--spacing-md);
+    justify-content: space-between;
     align-items: center;
+    padding: var(--spacing-sm) 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
 }
 
 .savings {
     font-family: 'IBM Plex Serif', serif;
+    font-size: 1.1rem;
     font-weight: 600;
     color: var(--success);
 }
 
 .savings small {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     color: var(--text-muted);
     font-weight: 400;
 }
 
 .roi {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: var(--accent);
-    font-weight: 500;
+    font-weight: 600;
+    background: rgba(59, 130, 246, 0.1);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
 }
 
 .actions {
     display: flex;
-    gap: var(--spacing-xs);
+    gap: var(--spacing-sm);
+    justify-content: flex-end;
 }
 
 .loadBtn {

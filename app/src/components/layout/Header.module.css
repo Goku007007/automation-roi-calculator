@@ -34,6 +34,11 @@
     letter-spacing: -0.02em;
 }
 
+.logoImg {
+    height: 32px;
+    width: auto;
+}
+
 /* Navigation */
 .nav {
     display: flex;

@@ -1,0 +1,22 @@
+<svg viewBox="0 0 180 40" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="boltGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6"/>
+      <stop offset="100%" style="stop-color:#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1e40af"/>
+      <stop offset="100%" style="stop-color:#3b82f6"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Lightning bolt icon -->
+  <g transform="translate(2, 2)">
+    <path d="M18 2L8 18h7l-3 16 12-20h-8l4-12z" fill="url(#boltGrad)" stroke="#1e40af" stroke-width="0.5"/>
+  </g>
+  
+  <!-- AutomateROI text -->
+  <text x="38" y="28" font-family="Inter, sans-serif" font-size="22" font-weight="700" fill="url(#textGrad)">
+    Automate<tspan fill="#059669">ROI</tspan>
+  </text>
+</svg>

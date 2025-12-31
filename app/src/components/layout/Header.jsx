@@ -8,7 +8,7 @@ export default function Header() {
             <div className={styles.container}>
                 {/* Logo */}
                 <NavLink to="/" className={styles.logo}>
-                    <span className={styles.logoText}>AutomateROI</span>
+                    <img src="/logo.svg" alt="AutomateROI" className={styles.logoImg} />
                 </NavLink>
 
                 {/* Navigation */}
