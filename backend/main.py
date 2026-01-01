@@ -4,20 +4,32 @@ Web server that exposes the ROI calculator as an API.
 
 Configuration:
     Set REQUIRE_AUTH=true to enable JWT authentication
+    Set RECAPTCHA_SECRET_KEY for production reCAPTCHA verification
     By default, auth is disabled for simplicity
 """
 
 import os
-from fastapi import FastAPI, HTTPException, Depends
+import httpx
+from typing import Optional
+from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.responses import Response
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, EmailStr
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 from models import ROIInput, ROIOutput
 from calculator import calculate_roi
 from pdf_generator import generate_pdf_report
 
-# Configuration: Set to "true" to require authentication
+# Configuration
 REQUIRE_AUTH = os.getenv("REQUIRE_AUTH", "false").lower() == "true"
+# reCAPTCHA secret key - Set RECAPTCHA_SECRET_KEY env var in production
+RECAPTCHA_SECRET_KEY = os.getenv("RECAPTCHA_SECRET_KEY", "6LenTj0sAAAAA03YNnZtpiUkpf0-xJnNwaMf3gZ")
+
+# Rate Limiter setup
+limiter = Limiter(key_func=get_remote_address)
 
 # Conditional import of auth module
 if REQUIRE_AUTH:
@@ -29,6 +41,10 @@ app = FastAPI(
     version="0.1.0",
 )
 
+# Add rate limiter to app
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -36,6 +52,39 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# =============================================================================
+# CONTACT FORM MODEL
+# =============================================================================
+
+class ContactFormInput(BaseModel):
+    name: str
+    email: EmailStr
+    company: Optional[str] = None
+    employees: Optional[str] = None
+    message: str
+    recaptcha_token: Optional[str] = None
+
+
+# =============================================================================
+# HELPER FUNCTIONS
+# =============================================================================
+
+async def verify_recaptcha(token: str) -> dict:
+    """Verify reCAPTCHA token with Google's API."""
+    if not token:
+        return {"success": False, "score": 0}
+    
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            "https://www.google.com/recaptcha/api/siteverify",
+            data={
+                "secret": RECAPTCHA_SECRET_KEY,
+                "response": token
+            }
+        )
+        return response.json()
 
 
 # =============================================================================
@@ -62,14 +111,53 @@ def get_token():
 
 
 # =============================================================================
+# CONTACT FORM ENDPOINT (with rate limiting)
+# =============================================================================
+
+@app.post("/contact")
+@limiter.limit("5/hour")  # Strict rate limit: 5 submissions per hour per IP
+async def submit_contact_form(request: Request, form_data: ContactFormInput):
+    """
+    Submit contact form with reCAPTCHA verification and rate limiting.
+    
+    Rate limit: 5 submissions per hour per IP address.
+    """
+    try:
+        # Verify reCAPTCHA token
+        recaptcha_result = await verify_recaptcha(form_data.recaptcha_token)
+        
+        if not recaptcha_result.get("success", False):
+            raise HTTPException(status_code=400, detail="reCAPTCHA verification failed")
+        
+        # Check reCAPTCHA score (v3 returns 0.0-1.0, higher is more likely human)
+        score = recaptcha_result.get("score", 0)
+        if score < 0.5:
+            raise HTTPException(status_code=400, detail="Request appears to be automated")
+        
+        # In production, you would save to database and/or send email
+        # For now, just return success
+        return {
+            "success": True,
+            "message": "Contact form submitted successfully",
+            "recaptcha_score": score
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# =============================================================================
 # CALCULATION ENDPOINTS
 # =============================================================================
 
 @app.post("/calculate")
-def calculate(inputs: ROIInput):
+@limiter.limit("30/minute")  # Rate limit calculations
+def calculate(request: Request, inputs: ROIInput):
     """
     Calculate automation ROI based on provided inputs.
     
+    Rate limit: 30 requests per minute per IP.
     When REQUIRE_AUTH=true, requires Bearer token in Authorization header.
     """
     try:
@@ -95,9 +183,12 @@ def calculate_with_auth(inputs: ROIInput, authenticated: bool = Depends(verify_t
 
 
 @app.post("/generate-pdf")
-def generate_pdf(inputs: ROIInput):
+@limiter.limit("10/minute")  # Rate limit PDF generation
+def generate_pdf(request: Request, inputs: ROIInput):
     """
     Generate PDF report from ROI calculation results.
+    
+    Rate limit: 10 requests per minute per IP.
     """
     try:
         result = calculate_roi(inputs)

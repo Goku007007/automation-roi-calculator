@@ -1,10 +1,51 @@
-import { useState } from 'react';
-import { ChartBarIcon, WrenchIcon, RocketIcon, CheckCircleIcon } from '../components/ui/Icons';
+import { useState, useEffect, useRef } from 'react';
+import { ChartBarIcon, WrenchIcon, RocketIcon, CheckCircleIcon, MailIcon } from '../components/ui/Icons';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Select from '../components/ui/Select';
 import Textarea from '../components/ui/Textarea';
 import styles from './Business.module.css';
+
+// reCAPTCHA site key (production)
+const RECAPTCHA_SITE_KEY = '6LenTj0sAAAAADNmBCx4Afd7SZeF2IBIHicyO22R';
+
+// Anti-spam email protection with multiple layers:
+// 1. CSS text reversal (works without JS)
+// 2. JavaScript obfuscation (assembles email client-side)
+// 3. No plaintext email in HTML source
+function ProtectedEmail() {
+    const linkRef = useRef(null);
+    const [isReady, setIsReady] = useState(false);
+
+    useEffect(() => {
+        // Assemble email only on client-side to prevent bot scraping
+        // Email: goku.careers@gmail.com (split and reversed)
+        const user = ['ukog', 'sreerac'].map(p => p.split('').reverse().join('')).join('.');
+        const domain = ['liamg', 'moc'].map(p => p.split('').reverse().join('')).join('.');
+        const email = `${user}@${domain}`;
+
+        if (linkRef.current) {
+            linkRef.current.href = `mailto:${email}`;
+            linkRef.current.textContent = email;
+            setIsReady(true);
+        }
+    }, []);
+
+    // CSS-only fallback: email is written backwards in HTML, CSS reverses it visually
+    // This works even if JavaScript is disabled
+    return (
+        <a
+            ref={linkRef}
+            href="#"
+            className={`${styles.emailLink} ${!isReady ? styles.emailReversed : ''}`}
+            aria-label="Send email"
+            data-email-reversed="true"
+        >
+            {/* Reversed email for CSS-only fallback: moc.liamg@sreerac.ukog */}
+            <span className={styles.emailFallback}>moc.liamg@sreerac.ukog</span>
+        </a>
+    );
+}
 
 export default function Business() {
     const [formData, setFormData] = useState({
@@ -13,6 +54,8 @@ export default function Business() {
         company: '',
         employees: '11-50',
         message: '',
+        // Honeypot field - if filled, submission is from a bot
+        website: '',
     });
     const [status, setStatus] = useState(null); // null, 'submitting', 'success', 'error'
 
@@ -23,22 +66,53 @@ export default function Business() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Honeypot check - bots will fill this hidden field
+        if (formData.website) {
+            // Silently reject but show success to not tip off bots
+            setStatus('success');
+            return;
+        }
+
         setStatus('submitting');
 
-        // Simulate form submission (in real app, send to backend or email service)
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        try {
+            // Execute reCAPTCHA v3 (invisible) and get token
+            let recaptchaToken = null;
+            if (window.grecaptcha) {
+                recaptchaToken = await new Promise((resolve, reject) => {
+                    window.grecaptcha.ready(() => {
+                        window.grecaptcha
+                            .execute(RECAPTCHA_SITE_KEY, { action: 'contact_form' })
+                            .then(resolve)
+                            .catch(reject);
+                    });
+                });
+            }
 
-        // Store in localStorage for demo purposes
-        const submissions = JSON.parse(localStorage.getItem('business-inquiries') || '[]');
-        submissions.push({
-            ...formData,
-            id: crypto.randomUUID(),
-            submittedAt: new Date().toISOString(),
-        });
-        localStorage.setItem('business-inquiries', JSON.stringify(submissions));
+            // In production, send recaptchaToken to backend for verification
+            // Backend should verify with Google and check score > 0.5
+            console.log('reCAPTCHA token:', recaptchaToken ? 'Generated' : 'Failed');
 
-        setStatus('success');
-        setFormData({ name: '', email: '', company: '', employees: '', message: '' });
+            // Simulate form submission (in real app, send to backend)
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // Store in localStorage for demo purposes
+            const submissions = JSON.parse(localStorage.getItem('business-inquiries') || '[]');
+            submissions.push({
+                ...formData,
+                recaptchaVerified: !!recaptchaToken,
+                id: crypto.randomUUID(),
+                submittedAt: new Date().toISOString(),
+            });
+            localStorage.setItem('business-inquiries', JSON.stringify(submissions));
+
+            setStatus('success');
+            setFormData({ name: '', email: '', company: '', employees: '', message: '', website: '' });
+        } catch (error) {
+            console.error('Form submission error:', error);
+            setStatus('error');
+        }
     };
 
     return (
@@ -90,6 +164,26 @@ export default function Business() {
                         </div>
                     ) : (
                         <form className={styles.form} onSubmit={handleSubmit}>
+                            {/* Honeypot field - hidden from real users, bots will fill it */}
+                            <div aria-hidden="true" style={{
+                                position: 'absolute',
+                                left: '-9999px',
+                                opacity: 0,
+                                height: 0,
+                                overflow: 'hidden'
+                            }}>
+                                <label htmlFor="website">Website (leave blank)</label>
+                                <input
+                                    type="text"
+                                    id="website"
+                                    name="website"
+                                    value={formData.website}
+                                    onChange={handleChange}
+                                    tabIndex={-1}
+                                    autoComplete="off"
+                                />
+                            </div>
+
                             <div className={styles.row}>
                                 <Input
                                     label="Name"
@@ -165,11 +259,13 @@ export default function Business() {
                     )}
                 </div>
 
-                {/* Contact Info */}
+                {/* Contact Info - Email is obfuscated to prevent spam */}
                 <div className={styles.contactInfo}>
-                    <p>Or reach us directly at <a href="mailto:hello@automateroi.com">hello@automateroi.com</a></p>
+                    <MailIcon size={18} />
+                    <p>Or reach us directly at <ProtectedEmail /></p>
                 </div>
             </div>
         </div>
     );
 }
+

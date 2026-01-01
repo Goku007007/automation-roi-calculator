@@ -188,18 +188,44 @@
 
 /* Contact Info */
 .contactInfo {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
     margin-top: var(--spacing-xl);
+    color: var(--text-muted);
 }
 
 .contactInfo p {
     font-size: 0.875rem;
     color: var(--text-muted);
+    margin: 0;
 }
 
-.contactInfo a {
-    color: var(--text-primary);
+.contactInfo a,
+.emailLink {
+    color: var(--accent);
     font-weight: 500;
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.contactInfo a:hover,
+.emailLink:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+}
+
+/* CSS text reversal for email protection (works without JS) */
+.emailReversed .emailFallback {
+    unicode-bidi: bidi-override;
+    direction: rtl;
+    display: inline-block;
+}
+
+/* Hide fallback when JS has loaded the real email */
+.emailLink:not(.emailReversed) .emailFallback {
+    display: none;
 }
 
 @media (max-width: 600px) {
