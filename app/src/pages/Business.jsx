@@ -77,25 +77,33 @@ export default function Business() {
         setStatus('submitting');
 
         try {
-            // Execute reCAPTCHA v3 (invisible) and get token
+            // Execute reCAPTCHA v3 (invisible) with timeout
             let recaptchaToken = null;
             if (window.grecaptcha) {
-                recaptchaToken = await new Promise((resolve, reject) => {
-                    window.grecaptcha.ready(() => {
-                        window.grecaptcha
-                            .execute(RECAPTCHA_SITE_KEY, { action: 'contact_form' })
-                            .then(resolve)
-                            .catch(reject);
-                    });
-                });
+                try {
+                    recaptchaToken = await Promise.race([
+                        new Promise((resolve, reject) => {
+                            window.grecaptcha.ready(() => {
+                                window.grecaptcha
+                                    .execute(RECAPTCHA_SITE_KEY, { action: 'contact_form' })
+                                    .then(resolve)
+                                    .catch(reject);
+                            });
+                        }),
+                        // Timeout after 5 seconds
+                        new Promise((_, reject) =>
+                            setTimeout(() => reject(new Error('reCAPTCHA timeout')), 5000)
+                        )
+                    ]);
+                } catch (recaptchaError) {
+                    console.warn('reCAPTCHA failed, continuing without verification:', recaptchaError);
+                }
             }
 
-            // In production, send recaptchaToken to backend for verification
-            // Backend should verify with Google and check score > 0.5
-            console.log('reCAPTCHA token:', recaptchaToken ? 'Generated' : 'Failed');
+            console.log('reCAPTCHA token:', recaptchaToken ? 'Generated' : 'Failed/Skipped');
 
-            // Simulate form submission (in real app, send to backend)
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            // Simulate form submission (stores locally for demo)
+            await new Promise(resolve => setTimeout(resolve, 1000));
 
             // Store in localStorage for demo purposes
             const submissions = JSON.parse(localStorage.getItem('business-inquiries') || '[]');
