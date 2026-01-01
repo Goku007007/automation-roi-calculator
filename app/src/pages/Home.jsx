@@ -4,6 +4,7 @@ import { SCENARIOS } from '../utils/scenarios';
 import ScenarioModule from '../components/home/ScenarioModule';
 import WhatIsAutomation from '../components/home/WhatIsAutomation';
 import HowItWorks from '../components/home/HowItWorks';
+import ReportPreview from '../components/home/ReportPreview';
 import PlaygroundTeaser from '../components/home/PlaygroundTeaser';
 import Button from '../components/ui/Button';
 import {
@@ -82,6 +83,9 @@ export default function Home() {
 
             {/* How It Works */}
             <HowItWorks />
+
+            {/* PDF Report Preview */}
+            <ReportPreview />
 
             {/* Playground Teaser */}
             <PlaygroundTeaser />
