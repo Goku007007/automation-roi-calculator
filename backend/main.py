@@ -47,7 +47,12 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://automateroi.vercel.app",  # Production frontend
+        "http://localhost:5173",            # Vite dev server
+        "http://localhost:5174",            # Vite dev server (alternate port)
+        "http://127.0.0.1:5173",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
