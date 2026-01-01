@@ -4,6 +4,7 @@ import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Select from '../components/ui/Select';
 import Textarea from '../components/ui/Textarea';
+import { submitContactForm } from '../utils/api';
 import styles from './Business.module.css';
 
 // reCAPTCHA site key (production)
@@ -102,18 +103,8 @@ export default function Business() {
 
             console.log('reCAPTCHA token:', recaptchaToken ? 'Generated' : 'Failed/Skipped');
 
-            // Simulate form submission (stores locally for demo)
-            await new Promise(resolve => setTimeout(resolve, 1000));
-
-            // Store in localStorage for demo purposes
-            const submissions = JSON.parse(localStorage.getItem('business-inquiries') || '[]');
-            submissions.push({
-                ...formData,
-                recaptchaVerified: !!recaptchaToken,
-                id: crypto.randomUUID(),
-                submittedAt: new Date().toISOString(),
-            });
-            localStorage.setItem('business-inquiries', JSON.stringify(submissions));
+            // Submit to backend with reCAPTCHA verification
+            await submitContactForm(formData, recaptchaToken);
 
             setStatus('success');
             setFormData({ name: '', email: '', company: '', employees: '', message: '', website: '' });

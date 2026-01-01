@@ -148,3 +148,25 @@ export async function checkHealth() {
         return false;
     }
 }
+
+export async function submitContactForm(formData, recaptchaToken) {
+    const response = await fetch(`${API_URL}/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            company: formData.company || null,
+            employees: formData.employees || null,
+            message: formData.message,
+            recaptcha_token: recaptchaToken,
+        }),
+    });
+
+    if (!response.ok) {
+        const error = await response.json().catch(() => ({ detail: 'Submission failed' }));
+        throw new Error(error.detail || 'Failed to submit form');
+    }
+
+    return response.json();
+}
