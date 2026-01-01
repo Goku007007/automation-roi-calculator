@@ -200,6 +200,27 @@ export function GoogleIcon({ size = 24, className = '' }) {
     );
 }
 
+export function XAIIcon({ size = 24, className = '' }) {
+    return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
+            {/* xAI - Dark/Black #000000 */}
+            <circle cx="12" cy="12" r="11" fill="#1a1a1a" />
+            <path d="M7 7l10 10M17 7L7 17" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+        </svg>
+    );
+}
+
+export function CohereIcon({ size = 24, className = '' }) {
+    return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
+            {/* Cohere - Coral #FF6B6B */}
+            <circle cx="12" cy="12" r="11" fill="#FF6B6B" />
+            <path d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
+            <circle cx="12" cy="14" r="2" fill="white" />
+        </svg>
+    );
+}
+
 // Tip Section Icons
 export function TargetIcon({ size = 24, className = '' }) {
     return (

@@ -143,6 +143,132 @@
     font-weight: 500;
 }
 
+.notes {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    color: white;
+    margin-left: var(--spacing-xs);
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+.badgeCheap {
+    display: inline-block;
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    background: var(--success);
+    color: white;
+    margin-left: var(--spacing-xs);
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+.badgeReasoning {
+    display: inline-block;
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    background: var(--warning);
+    color: white;
+    margin-left: var(--spacing-xs);
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+/* Row highlights */
+.flagshipRow {
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.cheapRow {
+    background: rgba(16, 185, 129, 0.05);
+}
+
+/* Capability icons */
+.checkIcon {
+    color: var(--success);
+}
+
+.xIcon {
+    color: var(--text-muted);
+}
+
+/* Last updated */
+.lastUpdated {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: var(--spacing-xs);
+}
+
+/* Definitions Grid */
+.definitionsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-sm);
+}
+
+.definition {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    font-size: 0.8rem;
+}
+
+.definition strong {
+    color: var(--accent);
+}
+
+/* Strategy Cards */
+.strategyCard {
+    padding: var(--spacing-md);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+.strategyCard h3 {
+    font-size: 0.95rem;
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.routingList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.routingList li {
+    padding: var(--spacing-xs) 0;
+    font-size: 0.85rem;
+    font-family: 'IBM Plex Mono', monospace;
+}
+
+.trapsList {
+    margin: 0;
+    padding-left: var(--spacing-lg);
+}
+
+.trapsList li {
+    font-size: 0.85rem;
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-secondary);
+}
+
 /* Tips Grid */
 .tips {
     display: grid;
@@ -189,8 +315,10 @@
     font-size: 0.75rem;
     color: var(--text-muted);
     margin-top: var(--spacing-xl);
-    padding-top: var(--spacing-lg);
-    border-top: 1px solid var(--border);
+    padding: var(--spacing-md);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
 }
 
 @media (max-width: 600px) {
@@ -198,10 +326,20 @@
     .table th,
     .table td {
         padding: var(--spacing-sm);
-        font-size: 0.8rem;
+        font-size: 0.75rem;
     }
 
     .logo {
+        display: none;
+    }
+
+    .badge,
+    .badgeCheap,
+    .badgeReasoning {
+        display: none;
+    }
+
+    .notes {
         display: none;
     }
 }
