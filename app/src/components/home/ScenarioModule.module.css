@@ -46,6 +46,38 @@
     .comparison {
         grid-template-columns: 1fr;
     }
+
+    /* Hide divider on mobile - not needed in single column layout */
+    .divider {
+        display: none;
+    }
+
+    /* Constrain workflow to prevent overflow */
+    .workflow {
+        padding: var(--spacing-md);
+        max-width: 100%;
+        overflow: hidden;
+    }
+
+    /* Fix step layout on mobile */
+    .step {
+        flex-wrap: wrap;
+        max-width: 100%;
+    }
+
+    .stepAction {
+        min-width: auto;
+        flex: 0 0 auto;
+    }
+
+    .stepDesc {
+        flex: 1 1 100%;
+        padding-left: 28px;
+        /* Align with text after chip */
+        margin-top: 2px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
 }
 
 /* Workflow Column */
@@ -135,13 +167,6 @@
     padding: var(--spacing-md);
     background: var(--bg-tertiary);
     color: var(--accent);
-}
-
-@media (max-width: 768px) {
-    .divider {
-        padding: var(--spacing-sm);
-        transform: rotate(90deg);
-    }
 }
 
 /* Metrics Section */
