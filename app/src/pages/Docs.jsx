@@ -122,8 +122,7 @@ export default function Docs() {
                                                 {tier.tasks ? ' tasks' : tier.operations ? ' ops' : tier.executions ? ' exec' : ''}
                                             </td>
                                             <td className={styles.price}>
-                                                {tier.price === 0 ? 'Free' : tier.price === 'custom' ? 'Contact' :
-                                                    `${tool.currency === 'EUR' ? '€' : '$'}${tier.price}`}
+                                                {tier.price === 0 ? 'Free' : tier.price === 'custom' ? 'Contact' : `$${tier.price}`}
                                             </td>
                                             <td className={styles.notes}>{tier.billingNotes || '—'}</td>
                                         </tr>
