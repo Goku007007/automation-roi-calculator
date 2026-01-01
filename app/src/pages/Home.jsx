@@ -1,75 +1,106 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ChartBarIcon, BoltIcon, BookOpenIcon, BuildingIcon } from '../components/ui/Icons';
+import { SCENARIOS } from '../utils/scenarios';
+import ScenarioModule from '../components/home/ScenarioModule';
+import WhatIsAutomation from '../components/home/WhatIsAutomation';
+import HowItWorks from '../components/home/HowItWorks';
+import PlaygroundTeaser from '../components/home/PlaygroundTeaser';
+import Button from '../components/ui/Button';
+import {
+    ArrowRightIcon, BookOpenIcon,
+    CheckCircleIcon, ShieldCheckIcon, FileTextIcon
+} from '../components/ui/Icons';
 import styles from './Home.module.css';
 
 export default function Home() {
+    const [activeScenario, setActiveScenario] = useState(0);
+
+    const categories = [
+        { id: 'invoice-approval', label: 'Finance' },
+        { id: 'lead-routing', label: 'Sales' },
+        { id: 'onboarding', label: 'HR' },
+    ];
+
     return (
         <div className={styles.page}>
             {/* Hero Section */}
             <section className={styles.hero}>
                 <h1 className={styles.title}>
-                    Calculate Your<br />
-                    <span className={styles.accent}>Automation ROI</span>
+                    Calculate Your Automation ROI<br />
+                    <span className={styles.accent}>in 60 Seconds</span>
                 </h1>
                 <p className={styles.subtitle}>
-                    See exactly how much you'll save—no spreadsheets required.
-                    Build credible business cases with transparent assumptions.
+                    See exactly how much time and money you'll save by automating
+                    repetitive tasks. No guesswork—just transparent math.
                 </p>
                 <div className={styles.cta}>
-                    <Link to="/calculator" className={styles.primaryBtn}>
-                        Calculate My ROI
+                    <Link to="/calculator">
+                        <Button variant="primary" size="lg">
+                            Calculate My ROI
+                            <ArrowRightIcon size={18} />
+                        </Button>
                     </Link>
-                    <Link to="/playground" className={styles.secondaryBtn}>
-                        Explore Tool Costs
+                    <Link to="/docs">
+                        <Button variant="secondary" size="lg">
+                            <BookOpenIcon size={18} />
+                            Explore Tool Costs
+                        </Button>
                     </Link>
                 </div>
             </section>
 
-            {/* Features Grid */}
-            <section className={styles.features}>
-                <div className={styles.feature}>
-                    <div className={styles.featureIcon}>
-                        <ChartBarIcon size={28} />
-                    </div>
-                    <h3>ROI Calculator</h3>
-                    <p>Calculate payback, savings, and compare Base/Best/Worst scenarios with transparent formulas.</p>
+            {/* What is Automation? */}
+            <WhatIsAutomation />
+
+            {/* Before/After Scenarios */}
+            <section className={styles.scenariosSection}>
+                <div className={styles.scenariosHeader}>
+                    <h2>See Automation in Action</h2>
+                    <p>Real workflows with transparent assumptions. Click any scenario to try it in the calculator.</p>
                 </div>
-                <div className={styles.feature}>
-                    <div className={styles.featureIcon}>
-                        <BoltIcon size={28} />
-                    </div>
-                    <h3>Cost Playground</h3>
-                    <p>Estimate monthly costs for Zapier, Make, n8n, and AI models in 30 seconds.</p>
+
+                {/* Category Tabs */}
+                <div className={styles.tabs} role="tablist" aria-label="Scenario categories">
+                    {categories.map((cat, index) => (
+                        <button
+                            key={cat.id}
+                            role="tab"
+                            aria-selected={activeScenario === index}
+                            className={`${styles.tab} ${activeScenario === index ? styles.tabActive : ''}`}
+                            onClick={() => setActiveScenario(index)}
+                        >
+                            {cat.label}
+                        </button>
+                    ))}
                 </div>
-                <div className={styles.feature}>
-                    <div className={styles.featureIcon}>
-                        <BookOpenIcon size={28} />
-                    </div>
-                    <h3>Pricing Reference</h3>
-                    <p>Complete reference for automation tool pricing and AI model costs.</p>
-                </div>
-                <div className={styles.feature}>
-                    <div className={styles.featureIcon}>
-                        <BuildingIcon size={28} />
-                    </div>
-                    <h3>Enterprise Help</h3>
-                    <p>Need custom automation? Get tailored solutions from our team.</p>
+
+                {/* Active Scenario */}
+                <div className={styles.scenarioContainer}>
+                    <ScenarioModule scenario={SCENARIOS[activeScenario]} />
                 </div>
             </section>
 
-            {/* Stats Section */}
-            <section className={styles.stats}>
-                <div className={styles.stat}>
-                    <span className={styles.statValue}>70%</span>
-                    <span className={styles.statLabel}>Avg Labor Reduction</span>
-                </div>
-                <div className={styles.stat}>
-                    <span className={styles.statValue}>6mo</span>
-                    <span className={styles.statLabel}>Typical Payback</span>
-                </div>
-                <div className={styles.stat}>
-                    <span className={styles.statValue}>5x</span>
-                    <span className={styles.statLabel}>5-Year ROI</span>
+            {/* How It Works */}
+            <HowItWorks />
+
+            {/* Playground Teaser */}
+            <PlaygroundTeaser />
+
+            {/* Trust Signals */}
+            <section className={styles.trustSection}>
+                <div className={styles.trustSignals}>
+                    <div className={styles.trustItem}>
+                        <CheckCircleIcon size={20} />
+                        <span>Transparent assumptions (edit any input)</span>
+                    </div>
+                    <div className={styles.trustItem}>
+                        <ShieldCheckIcon size={20} />
+                        <span>Audit-friendly PDF exports</span>
+                    </div>
+                    <div className={styles.trustItem}>
+                        <FileTextIcon size={20} />
+                        <span>No spreadsheets required</span>
+                    </div>
                 </div>
             </section>
         </div>
