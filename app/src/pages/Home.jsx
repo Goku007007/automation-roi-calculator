@@ -31,19 +31,19 @@ export default function Home() {
                 </h1>
                 <p className={styles.subtitle}>
                     See exactly how much time and money you'll save by automating
-                    repetitive tasks. No guesswork—just transparent math.
+                    repetitive tasks. No guesswork. Just transparent math.
                 </p>
                 <div className={styles.cta}>
                     <Link to="/calculator">
                         <Button variant="primary" size="lg">
-                            Calculate My ROI
+                            <span>Calculate My ROI</span>
                             <ArrowRightIcon size={18} />
                         </Button>
                     </Link>
                     <Link to="/docs">
                         <Button variant="secondary" size="lg">
                             <BookOpenIcon size={18} />
-                            Explore Tool Costs
+                            <span>Explore Tool Costs</span>
                         </Button>
                     </Link>
                 </div>

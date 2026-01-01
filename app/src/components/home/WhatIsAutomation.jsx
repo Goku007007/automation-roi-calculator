@@ -8,7 +8,7 @@ export default function WhatIsAutomation() {
                 <h2 className={styles.title}>What is Automation?</h2>
                 <p className={styles.definition}>
                     Automation replaces manual, repetitive steps with software that runs on a schedule
-                    or trigger—no human clicking required. It's how teams do more with less.
+                    or trigger. No human clicking required. It's how teams do more with less.
                 </p>
                 <ul className={styles.benefits}>
                     <li>

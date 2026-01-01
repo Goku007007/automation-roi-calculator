@@ -31,7 +31,7 @@ export default function Button({
         >
             {loading && <Spinner size="sm" light={variant === 'primary' || variant === 'destructive'} />}
             {!loading && icon && <span className={styles.icon}>{icon}</span>}
-            <span className={loading ? styles.loadingText : ''}>{children}</span>
+            {!loading && children}
         </button>
     );
 }

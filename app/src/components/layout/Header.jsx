@@ -14,6 +14,13 @@ export default function Header() {
                 {/* Navigation */}
                 <nav className={styles.nav}>
                     <NavLink
+                        to="/"
+                        className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink}
+                        end
+                    >
+                        Home
+                    </NavLink>
+                    <NavLink
                         to="/calculator"
                         className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink}
                     >
@@ -24,6 +31,12 @@ export default function Header() {
                         className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink}
                     >
                         Playground
+                    </NavLink>
+                    <NavLink
+                        to="/marketplace"
+                        className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink}
+                    >
+                        Marketplace
                     </NavLink>
                     <NavLink
                         to="/docs"
