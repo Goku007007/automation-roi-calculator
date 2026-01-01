@@ -25,8 +25,8 @@ from pdf_generator import generate_pdf_report
 
 # Configuration
 REQUIRE_AUTH = os.getenv("REQUIRE_AUTH", "false").lower() == "true"
-# reCAPTCHA secret key - Set RECAPTCHA_SECRET_KEY env var in production
-RECAPTCHA_SECRET_KEY = os.getenv("RECAPTCHA_SECRET_KEY", "6LenTj0sAAAAA03YNnZtpiUkpf0-xJnNwaMf3gZ")
+# reCAPTCHA secret key - MUST be set via environment variable
+RECAPTCHA_SECRET_KEY = os.getenv("RECAPTCHA_SECRET_KEY", "")
 
 # Rate Limiter setup
 limiter = Limiter(key_func=get_remote_address)
