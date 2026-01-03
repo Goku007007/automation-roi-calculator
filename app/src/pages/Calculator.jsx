@@ -23,6 +23,12 @@ export default function Calculator() {
     const [loadedInputs, setLoadedInputs] = useState(null);
     const [selectedTemplate, setSelectedTemplate] = useState(null);
 
+    // PDF branding options
+    const [pdfBranding, setPdfBranding] = useState({
+        company_name: '',
+        brand_color: '#2563eb',
+    });
+
     // Scenario management
     const [activeScenario, setActiveScenario] = useState('base');
     const [scenarios, setScenarios] = useState({
@@ -110,7 +116,14 @@ export default function Calculator() {
 
         setIsDownloading(true);
         try {
-            const blob = await generatePDF(formData);
+            // Merge form data with branding options
+            const pdfData = {
+                ...formData,
+                ...(pdfBranding.company_name && { company_name: pdfBranding.company_name }),
+                ...(pdfBranding.brand_color !== '#2563eb' && { brand_color: pdfBranding.brand_color }),
+            };
+
+            const blob = await generatePDF(pdfData);
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -215,6 +228,8 @@ export default function Calculator() {
                                     data={results}
                                     onDownloadPDF={handleDownloadPDF}
                                     isDownloading={isDownloading}
+                                    branding={pdfBranding}
+                                    onBrandingChange={setPdfBranding}
                                 />
 
                                 {/* Save Actions */}

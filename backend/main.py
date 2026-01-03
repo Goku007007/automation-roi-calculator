@@ -19,7 +19,7 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
-from models import ROIInput, ROIOutput
+from models import ROIInput, ROIOutput, PDFRequest
 from calculator import calculate_roi
 from pdf_generator import generate_pdf_report
 
@@ -189,15 +189,28 @@ def calculate_with_auth(inputs: ROIInput, authenticated: bool = Depends(verify_t
 
 @app.post("/generate-pdf")
 @limiter.limit("10/minute")  # Rate limit PDF generation
-def generate_pdf(request: Request, inputs: ROIInput):
+def generate_pdf(request: Request, inputs: PDFRequest):
     """
-    Generate PDF report from ROI calculation results.
+    Generate PDF report from ROI calculation results with optional branding.
+    
+    Branding options (all optional):
+    - company_name: Custom company name for PDF header
+    - brand_color: Hex color for title bar (e.g., "#2563eb")
+    - logo_base64: Base64-encoded logo image
     
     Rate limit: 10 requests per minute per IP.
     """
     try:
+        # Calculate ROI (using only the ROIInput fields)
         result = calculate_roi(inputs)
-        pdf_bytes = generate_pdf_report(result)
+        
+        # Generate PDF with branding options
+        pdf_bytes = generate_pdf_report(
+            result,
+            company_name=inputs.company_name,
+            brand_color=inputs.brand_color,
+            logo_base64=inputs.logo_base64
+        )
         return Response(content=pdf_bytes, media_type="application/pdf")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

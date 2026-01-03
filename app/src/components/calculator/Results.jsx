@@ -33,8 +33,9 @@ function getBenchmarkStatus(metric, value) {
     return null;
 }
 
-export default function Results({ data, onDownloadPDF, isDownloading }) {
+export default function Results({ data, onDownloadPDF, isDownloading, branding, onBrandingChange }) {
     const [showMethodology, setShowMethodology] = useState(false);
+    const [showBranding, setShowBranding] = useState(false);
 
     if (!data) return null;
 
@@ -156,6 +157,47 @@ export default function Results({ data, onDownloadPDF, isDownloading }) {
                         * Projections assume consistent volumes. Actual results may vary.
                     </p>
                 </div>
+            )}
+
+            {/* PDF Branding Options */}
+            {branding && onBrandingChange && (
+                <>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowBranding(!showBranding)}
+                        type="button"
+                    >
+                        {showBranding ? 'Hide PDF options' : 'Customize PDF Report'}
+                    </Button>
+
+                    {showBranding && (
+                        <div className={styles.brandingSection}>
+                            <div className={styles.brandingField}>
+                                <label htmlFor="company_name">Company Name</label>
+                                <input
+                                    type="text"
+                                    id="company_name"
+                                    placeholder="Your Company Name (optional)"
+                                    value={branding.company_name}
+                                    onChange={(e) => onBrandingChange({ ...branding, company_name: e.target.value })}
+                                />
+                            </div>
+                            <div className={styles.brandingField}>
+                                <label htmlFor="brand_color">Brand Color</label>
+                                <div className={styles.colorPicker}>
+                                    <input
+                                        type="color"
+                                        id="brand_color"
+                                        value={branding.brand_color}
+                                        onChange={(e) => onBrandingChange({ ...branding, brand_color: e.target.value })}
+                                    />
+                                    <span>{branding.brand_color}</span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </>
             )}
 
             {/* Actions */}

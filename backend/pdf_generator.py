@@ -52,9 +52,25 @@ def get_priority_bg(priority: str) -> colors.Color:
     return {'High': COLORS['positive_bg'], 'Medium': colors.HexColor('#faf8f5'), 'Low': colors.HexColor('#faf5f5')}.get(priority, COLORS['surface'])
 
 
-def generate_pdf_report(data: ROIOutput) -> bytes:
-    """Generate an enterprise-grade one-page PDF report."""
+def generate_pdf_report(
+    data: ROIOutput,
+    company_name: str = None,
+    brand_color: str = None,
+    logo_base64: str = None
+) -> bytes:
+    """
+    Generate an enterprise-grade one-page PDF report.
+    
+    Branding options:
+    - company_name: Custom company name (default: "AutomateROI")
+    - brand_color: Hex color for title bar (default: "#2563eb")
+    - logo_base64: Base64-encoded logo image (optional)
+    """
     buffer = BytesIO()
+    
+    # Use custom branding or defaults
+    display_name = company_name or "AutomateROI"
+    title_color = colors.HexColor(brand_color) if brand_color else COLORS['brand']
     
     # Consistent margins
     margin = 0.5 * inch
@@ -72,9 +88,31 @@ def generate_pdf_report(data: ROIOutput) -> bytes:
     elements = []
     
     # ==================== HEADER (enterprise-clean) ====================
+    # Handle logo: either base64 image or text
+    if logo_base64:
+        try:
+            from reportlab.platypus import Image
+            import base64
+            # Decode base64 and create image
+            logo_data = base64.b64decode(logo_base64.split(',')[-1] if ',' in logo_base64 else logo_base64)
+            logo_buffer = BytesIO(logo_data)
+            logo_img = Image(logo_buffer, width=1.2*inch, height=0.4*inch)
+            logo_img.hAlign = 'LEFT'
+            logo_element = logo_img
+        except Exception:
+            # Fallback to text if image fails
+            logo_element = Paragraph(
+                f'<font name="{FONT_BOLD}" size="14" color="{brand_color or "#2563eb"}">{display_name}</font>', 
+                ParagraphStyle('Logo', alignment=TA_LEFT)
+            )
+    else:
+        logo_element = Paragraph(
+            f'<font name="{FONT_BOLD}" size="14" color="{brand_color or "#2563eb"}">{display_name}</font>', 
+            ParagraphStyle('Logo', alignment=TA_LEFT)
+        )
+    
     header_data = [[
-        Paragraph(f'<font name="{FONT_BOLD}" size="14" color="#2563eb">AutomateROI</font>', 
-                  ParagraphStyle('Logo', alignment=TA_LEFT)),
+        logo_element,
         Paragraph(f'<font name="{FONT}" size="8" color="#9ca3af">{datetime.now().strftime("%B %d, %Y")}</font>',
                   ParagraphStyle('Date', alignment=TA_RIGHT)),
     ]]
@@ -85,7 +123,7 @@ def generate_pdf_report(data: ROIOutput) -> bytes:
     ]))
     elements.append(header)
     
-    # Title bar (reduced height, no all-caps except section headers)
+    # Title bar (uses custom brand color)
     title_table = Table([
         [Paragraph(f'<font name="{FONT_BOLD}" size="12" color="white">Automation ROI Report</font>',
                    ParagraphStyle('Title', alignment=TA_CENTER))],
@@ -93,7 +131,7 @@ def generate_pdf_report(data: ROIOutput) -> bytes:
                    ParagraphStyle('Sub', alignment=TA_CENTER))],
     ], colWidths=[page_width])
     title_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, -1), COLORS['brand']),
+        ('BACKGROUND', (0, 0), (-1, -1), title_color),
         ('TOPPADDING', (0, 0), (-1, 0), 8),
         ('BOTTOMPADDING', (0, -1), (-1, -1), 8),
     ]))

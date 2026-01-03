@@ -69,6 +69,19 @@ class ROIInput(BaseModel):
 
 
 # =============================================================================
+# PDF REQUEST MODEL (extends ROIInput with branding)
+# =============================================================================
+
+class PDFRequest(ROIInput):
+    """PDF generation request with optional branding options."""
+    
+    # Branding options (all optional)
+    company_name: str = Field(default=None, description="Custom company name for PDF header")
+    brand_color: str = Field(default=None, description="Hex color for PDF title bar (e.g., #2563eb)")
+    logo_base64: str = Field(default=None, description="Base64-encoded logo image (data:image/png;base64,...)")
+
+
+# =============================================================================
 # OUTPUT MODEL
 # =============================================================================
 
