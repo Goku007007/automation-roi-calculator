@@ -107,6 +107,11 @@ class ROIOutput(BaseModel):
     # Confidence
     confidence_level: str
     assumptions: list[str]
+    
+    # Executive Summary (new - addresses "decision clarity" feedback)
+    executive_summary: dict = {}  # {is_worth_it: str, why: str, what_next: str}
+    recommended_automation_type: str = ""  # iPaaS, RPA, Custom, or Hybrid
+    automation_type_reasoning: str = ""  # Why this recommendation
 
 
 # =============================================================================

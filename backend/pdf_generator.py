@@ -98,11 +98,109 @@ def generate_pdf_report(data: ROIOutput) -> bytes:
         ('BOTTOMPADDING', (0, -1), (-1, -1), 8),
     ]))
     elements.append(title_table)
-    elements.append(Spacer(1, 16))
+    elements.append(Spacer(1, 12))
     
-    # ==================== EXECUTIVE SUMMARY ====================
+    # ==================== EXECUTIVE SUMMARY (3-Part Answer) ====================
     section_style = ParagraphStyle('Section', fontName=FONT_BOLD, fontSize=9, textColor=COLORS['text_primary'], spaceAfter=8)
     elements.append(Paragraph("EXECUTIVE SUMMARY", section_style))
+    
+    # Get executive summary data (with fallback for backward compatibility)
+    exec_summary = getattr(data, 'executive_summary', {})
+    automation_type = getattr(data, 'recommended_automation_type', '')
+    
+    if exec_summary:
+        # Style for the summary paragraphs
+        summary_para_style = ParagraphStyle(
+            'SummaryPara',
+            fontName=FONT,
+            fontSize=8,
+            leading=11,
+            textColor=COLORS['text_primary'],
+            spaceAfter=4
+        )
+        
+        # Question label style
+        question_style = ParagraphStyle(
+            'Question',
+            fontName=FONT_BOLD,
+            fontSize=7,
+            textColor=COLORS['brand'],
+            spaceAfter=2
+        )
+        
+        # Create the 3-part summary box
+        summary_content = []
+        
+        # Part 1: Is it worth it?
+        is_worth_it = exec_summary.get('is_worth_it', '')
+        if is_worth_it:
+            # Extract the Yes/No/Likely Yes part and color it
+            if is_worth_it.startswith("Yes."):
+                answer_color = "#3d8b6e"  # Green
+                answer_text = "Yes"
+                rest_text = is_worth_it[4:].strip()
+            elif is_worth_it.startswith("Likely Yes."):
+                answer_color = "#8b7355"  # Amber
+                answer_text = "Likely Yes"
+                rest_text = is_worth_it[11:].strip()
+            else:
+                answer_color = "#9b6b6b"  # Red
+                answer_text = "Needs Review"
+                rest_text = is_worth_it.split(".", 1)[1].strip() if "." in is_worth_it else is_worth_it
+            
+            summary_content.append([
+                Paragraph(f'<font name="{FONT_BOLD}" size="7" color="#4b5563">IS THIS WORTH AUTOMATING?</font>', 
+                         ParagraphStyle('Q', alignment=TA_LEFT)),
+            ])
+            summary_content.append([
+                Paragraph(
+                    f'<font name="{FONT_BOLD}" size="9" color="{answer_color}">{answer_text}</font> '
+                    f'<font name="{FONT}" size="8" color="#374151">{rest_text}</font>',
+                    summary_para_style
+                ),
+            ])
+        
+        # Part 2: Why?
+        why = exec_summary.get('why', '')
+        if why:
+            summary_content.append([
+                Paragraph(f'<font name="{FONT_BOLD}" size="7" color="#4b5563">WHY?</font>', 
+                         ParagraphStyle('Q', alignment=TA_LEFT, spaceBefore=6)),
+            ])
+            summary_content.append([
+                Paragraph(f'<font name="{FONT}" size="8" color="#374151">{why}</font>', summary_para_style),
+            ])
+        
+        # Part 3: What next?
+        what_next = exec_summary.get('what_next', '')
+        if what_next:
+            summary_content.append([
+                Paragraph(f'<font name="{FONT_BOLD}" size="7" color="#4b5563">WHAT SHOULD YOU DO NEXT?</font>', 
+                         ParagraphStyle('Q', alignment=TA_LEFT, spaceBefore=6)),
+            ])
+            summary_content.append([
+                Paragraph(f'<font name="{FONT}" size="8" color="#374151">{what_next}</font>', summary_para_style),
+            ])
+        
+        # Build the summary table with a subtle border
+        if summary_content:
+            summary_table = Table(summary_content, colWidths=[page_width - 16])
+            summary_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#f8fafc')),
+                ('BOX', (0, 0), (-1, -1), 1, COLORS['brand_muted']),
+                ('TOPPADDING', (0, 0), (-1, 0), 10),
+                ('BOTTOMPADDING', (0, -1), (-1, -1), 10),
+                ('LEFTPADDING', (0, 0), (-1, -1), 12),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 12),
+                ('TOPPADDING', (0, 1), (-1, -1), 2),
+                ('BOTTOMPADDING', (0, 0), (-1, -2), 2),
+            ]))
+            elements.append(summary_table)
+    
+    elements.append(Spacer(1, 12))
+    
+    # ==================== KEY METRICS ====================
+    elements.append(Paragraph("KEY METRICS", section_style))
     
     # Three equal-width metric cards
     kpi_width = page_width / 3

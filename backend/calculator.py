@@ -133,6 +133,20 @@ def calculate_roi(inputs: ROIInput) -> ROIOutput:
     confidence_level = _assess_confidence(inputs)
     assumptions = _build_assumptions_list(inputs, config)
     
+    # Executive Summary (new - addresses manager's "decision clarity" feedback)
+    automation_type, automation_reasoning = _recommend_automation_type(inputs, runs_per_year)
+    executive_summary = _generate_executive_summary(
+        inputs=inputs,
+        net_annual_savings=net_annual_savings,
+        payback_months=payback_months,
+        priority_score=priority_score,
+        total_current_cost=total_current_cost,
+        annual_labor_cost=annual_labor_cost,
+        runs_per_year=runs_per_year,
+        automation_type=automation_type,
+        automation_reasoning=automation_reasoning
+    )
+    
     return ROIOutput(
         process_name=inputs.process_name,
         annual_labor_cost=round(annual_labor_cost, 2),
@@ -153,6 +167,9 @@ def calculate_roi(inputs: ROIInput) -> ROIOutput:
         recommendation=recommendation,
         confidence_level=confidence_level,
         assumptions=assumptions,
+        executive_summary=executive_summary,
+        recommended_automation_type=automation_type,
+        automation_type_reasoning=automation_reasoning,
     )
 
 
@@ -293,6 +310,196 @@ def _build_assumptions_list(inputs: ROIInput, config: CalculatorConfig) -> list:
         f"Hours/day: {inputs.hours_per_day}",
         f"Volume growth: {inputs.volume_growth}% annually",
     ]
+
+
+def _recommend_automation_type(inputs: ROIInput, runs_per_year: int) -> tuple[str, str]:
+    """
+    Recommend automation type based on research-backed decision matrix.
+    
+    Scoring logic based on:
+    - Volume (transactions per year)
+    - Complexity (error rate as proxy)
+    - Process frequency
+    
+    Returns:
+        Tuple of (automation_type, reasoning)
+    """
+    # Calculate scores for each automation type (0-100)
+    ipaas_score = 0
+    rpa_score = 0
+    custom_score = 0
+    
+    monthly_volume = runs_per_year / 12
+    
+    # Volume scoring
+    if monthly_volume < 500:
+        ipaas_score += 40  # Low volume favors iPaaS
+    elif monthly_volume < 2000:
+        ipaas_score += 25
+        rpa_score += 25
+    else:
+        rpa_score += 35  # High volume needs robust tooling
+        custom_score += 25
+    
+    # Complexity scoring (using error rate as proxy)
+    if inputs.error_rate < 5:
+        ipaas_score += 30  # Simple process
+    elif inputs.error_rate < 15:
+        rpa_score += 25  # Moderate complexity
+        ipaas_score += 15
+    else:
+        custom_score += 35  # High complexity needs custom logic
+        rpa_score += 20
+    
+    # Time per run scoring (complexity proxy)
+    if inputs.hours_per_run < 0.5:
+        ipaas_score += 20  # Quick tasks suit iPaaS
+    elif inputs.hours_per_run < 2:
+        rpa_score += 20  # Medium tasks
+    else:
+        custom_score += 25  # Long processes need custom handling
+        rpa_score += 15
+    
+    # Frequency scoring
+    high_freq = inputs.frequency in [Frequency.EVERY_MINUTE, Frequency.HOURLY, Frequency.DAILY]
+    if high_freq:
+        rpa_score += 15  # High frequency benefits from robust monitoring
+        custom_score += 10
+    else:
+        ipaas_score += 15  # Lower frequency is fine for iPaaS
+    
+    # Determine winner
+    scores = {
+        "iPaaS": ipaas_score,
+        "RPA": rpa_score,
+        "Custom": custom_score
+    }
+    
+    sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+    primary = sorted_scores[0]
+    secondary = sorted_scores[1]
+    
+    # Check if hybrid is appropriate (scores within 10 points)
+    if primary[1] - secondary[1] <= 10:
+        automation_type = f"{primary[0]} + {secondary[0]}"
+        is_hybrid = True
+    else:
+        automation_type = primary[0]
+        is_hybrid = False
+    
+    # Generate reasoning
+    reasoning_parts = []
+    
+    if "iPaaS" in automation_type:
+        if monthly_volume < 500:
+            reasoning_parts.append("low monthly volume suits cloud-native integration tools")
+        else:
+            reasoning_parts.append("API-first approach enables rapid deployment")
+            
+    if "RPA" in automation_type:
+        if monthly_volume >= 2000:
+            reasoning_parts.append("high transaction volume requires enterprise-grade automation")
+        else:
+            reasoning_parts.append("process involves structured, repetitive tasks")
+            
+    if "Custom" in automation_type:
+        if inputs.error_rate >= 15:
+            reasoning_parts.append("high error rate indicates complex business logic requiring custom handling")
+        elif inputs.hours_per_run >= 2:
+            reasoning_parts.append("long-running processes benefit from custom orchestration")
+    
+    if is_hybrid:
+        reasoning_parts.append("hybrid approach recommended as multiple automation styles score similarly")
+    
+    reasoning = f"We recommend {automation_type} because " + ", and ".join(reasoning_parts) + "."
+    
+    return automation_type, reasoning
+
+
+def _generate_executive_summary(
+    inputs: ROIInput,
+    net_annual_savings: float,
+    payback_months: float,
+    priority_score: str,
+    total_current_cost: float,
+    annual_labor_cost: float,
+    runs_per_year: int,
+    automation_type: str,
+    automation_reasoning: str
+) -> dict:
+    """
+    Generate a 3-part executive summary answering:
+    1. Is this worth automating?
+    2. Why?
+    3. What should you do next?
+    
+    Returns:
+        Dict with is_worth_it, why, and what_next keys
+    """
+    # Calculate hours per month for the "why" section
+    monthly_hours = (inputs.hours_per_run * runs_per_year * inputs.staff_count) / 12
+    
+    # Part 1: Is this worth it?
+    if priority_score == "High" and payback_months < 12:
+        worth_answer = "Yes"
+        worth_statement = (
+            f"Based on your inputs, automating {inputs.process_name} is projected to save "
+            f"${net_annual_savings:,.0f}/year with payback in {payback_months:.1f} months."
+        )
+    elif priority_score == "Medium" or payback_months < 24:
+        worth_answer = "Likely Yes"
+        worth_statement = (
+            f"Automating {inputs.process_name} shows solid ROI with ${net_annual_savings:,.0f} "
+            f"in annual savings and {payback_months:.1f}-month payback. Worth pursuing."
+        )
+    else:
+        worth_answer = "Needs Review"
+        worth_statement = (
+            f"The numbers show modest returns (${net_annual_savings:,.0f}/year, "
+            f"{payback_months:.1f}-month payback). Consider non-financial benefits like quality and compliance."
+        )
+    
+    is_worth_it = f"{worth_answer}. {worth_statement}"
+    
+    # Part 2: Why? (current state + biggest drivers)
+    drivers = []
+    if annual_labor_cost >= total_current_cost * 0.6:
+        drivers.append("manual data entry and processing time")
+    if inputs.error_rate > 5:
+        drivers.append(f"{inputs.error_rate}% error rate requiring rework")
+    if inputs.has_sla and inputs.sla_breaches_year > 0:
+        drivers.append("SLA compliance risks")
+    
+    if not drivers:
+        drivers = ["repetitive manual tasks", "process standardization opportunity"]
+    
+    why = (
+        f"Your team currently spends {monthly_hours:.0f} hours/month on this process. "
+        f"The biggest cost drivers are {' and '.join(drivers[:2])}."
+    )
+    
+    # Part 3: What next? (automation type + first step)
+    # Extract just the primary recommendation for cleaner output
+    primary_type = automation_type.split(" + ")[0] if " + " in automation_type else automation_type
+    
+    tool_examples = {
+        "iPaaS": "Zapier, Make, or Workato",
+        "RPA": "UiPath, Power Automate, or Automation Anywhere",
+        "Custom": "Python scripts or custom API integrations"
+    }
+    
+    tools = tool_examples.get(primary_type, "workflow automation tools")
+    
+    what_next = (
+        f"We recommend {automation_type} ({tools}). "
+        f"Start with a 2-week pilot on your highest-volume scenario to validate savings."
+    )
+    
+    return {
+        "is_worth_it": is_worth_it,
+        "why": why,
+        "what_next": what_next
+    }
 
 
 # =============================================================================
