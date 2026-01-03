@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import CalculatorForm from '../components/calculator/CalculatorForm';
+import ProcessTemplates from '../components/calculator/ProcessTemplates';
 import Results from '../components/calculator/Results';
 import ProjectList from '../components/calculator/ProjectList';
 import ScenarioTabs from '../components/calculator/ScenarioTabs';
@@ -20,6 +21,7 @@ export default function Calculator() {
     const [error, setError] = useState(null);
     const [showProjects, setShowProjects] = useState(false);
     const [loadedInputs, setLoadedInputs] = useState(null);
+    const [selectedTemplate, setSelectedTemplate] = useState(null);
 
     // Scenario management
     const [activeScenario, setActiveScenario] = useState('base');
@@ -30,6 +32,14 @@ export default function Calculator() {
     });
 
     const { projects, saveProject, deleteProject, duplicateProject } = useProjects();
+
+    // Handle template selection
+    const handleSelectTemplate = (template) => {
+        setSelectedTemplate(template.id);
+        setLoadedInputs(template.defaults);
+        setFormKey(prev => prev + 1);
+        setResults(null); // Clear previous results
+    };
 
     const handleSubmit = async (data) => {
         setIsLoading(true);
@@ -174,6 +184,12 @@ export default function Calculator() {
                             activeScenario={activeScenario}
                             scenarios={scenarios}
                             onScenarioChange={handleScenarioChange}
+                        />
+
+                        {/* Process Templates - Quick Start */}
+                        <ProcessTemplates
+                            onSelectTemplate={handleSelectTemplate}
+                            selectedId={selectedTemplate}
                         />
 
                         {error && (
