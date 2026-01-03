@@ -27,6 +27,7 @@ export default function Calculator() {
     const [pdfBranding, setPdfBranding] = useState({
         company_name: '',
         brand_color: '#2563eb',
+        logo_base64: '',
     });
 
     // Scenario management
@@ -121,6 +122,7 @@ export default function Calculator() {
                 ...formData,
                 ...(pdfBranding.company_name && { company_name: pdfBranding.company_name }),
                 ...(pdfBranding.brand_color !== '#2563eb' && { brand_color: pdfBranding.brand_color }),
+                ...(pdfBranding.logo_base64 && { logo_base64: pdfBranding.logo_base64 }),
             };
 
             const blob = await generatePDF(pdfData);

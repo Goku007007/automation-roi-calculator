@@ -195,6 +195,39 @@ export default function Results({ data, onDownloadPDF, isDownloading, branding, 
                                     <span>{branding.brand_color}</span>
                                 </div>
                             </div>
+                            <div className={`${styles.brandingField} ${styles.logoField}`}>
+                                <label htmlFor="logo_upload">Company Logo</label>
+                                <div className={styles.logoUpload}>
+                                    <input
+                                        type="file"
+                                        id="logo_upload"
+                                        accept="image/png,image/jpeg,image/svg+xml"
+                                        onChange={(e) => {
+                                            const file = e.target.files[0];
+                                            if (file) {
+                                                const reader = new FileReader();
+                                                reader.onloadend = () => {
+                                                    onBrandingChange({ ...branding, logo_base64: reader.result });
+                                                };
+                                                reader.readAsDataURL(file);
+                                            }
+                                        }}
+                                    />
+                                    <span className={styles.sizeHint}>Recommended: 120×40px (PNG or SVG)</span>
+                                    {branding.logo_base64 && (
+                                        <div className={styles.logoPreview}>
+                                            <img src={branding.logo_base64} alt="Logo preview" />
+                                            <button
+                                                type="button"
+                                                className={styles.removeLogo}
+                                                onClick={() => onBrandingChange({ ...branding, logo_base64: '' })}
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     )}
                 </>

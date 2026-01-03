@@ -92,11 +92,24 @@ def generate_pdf_report(
     if logo_base64:
         try:
             from reportlab.platypus import Image
+            from PIL import Image as PILImage
             import base64
             # Decode base64 and create image
             logo_data = base64.b64decode(logo_base64.split(',')[-1] if ',' in logo_base64 else logo_base64)
             logo_buffer = BytesIO(logo_data)
-            logo_img = Image(logo_buffer, width=1.2*inch, height=0.4*inch)
+            
+            # Get original dimensions and calculate scaled size
+            pil_img = PILImage.open(BytesIO(logo_data))
+            orig_width, orig_height = pil_img.size
+            max_height = 0.5 * inch  # Max height in PDF
+            
+            # Preserve aspect ratio, only constrain by height
+            scale = max_height / orig_height if orig_height > max_height * 72 / inch else 1
+            pdf_width = (orig_width * scale / 72) * inch
+            pdf_height = (orig_height * scale / 72) * inch
+            
+            logo_buffer.seek(0)
+            logo_img = Image(logo_buffer, width=pdf_width, height=pdf_height)
             logo_img.hAlign = 'LEFT'
             logo_element = logo_img
         except Exception:

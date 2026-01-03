@@ -10,6 +10,7 @@ email-validator>=2.0.0  # Required for Pydantic EmailStr
 
 # PDF Generation
 reportlab>=4.0.0
+Pillow>=10.0.0
 
 # Authentication (optional)
 python-jose>=3.3.0
