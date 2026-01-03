@@ -56,6 +56,41 @@ export default function Results({ data, onDownloadPDF, isDownloading }) {
                 </span>
             </div>
 
+            {/* Executive Summary - Decision Clarity */}
+            {data.executive_summary && Object.keys(data.executive_summary).length > 0 && (
+                <div className={styles.executiveSummary}>
+                    <h3>Executive Summary</h3>
+
+                    {data.executive_summary.is_worth_it && (
+                        <div className={styles.summarySection}>
+                            <span className={styles.sectionLabel}>Is this worth automating?</span>
+                            <p className={styles.sectionContent}>{data.executive_summary.is_worth_it}</p>
+                        </div>
+                    )}
+
+                    {data.executive_summary.why && (
+                        <div className={styles.summarySection}>
+                            <span className={styles.sectionLabel}>Why?</span>
+                            <p className={styles.sectionContent}>{data.executive_summary.why}</p>
+                        </div>
+                    )}
+
+                    {data.executive_summary.what_next && (
+                        <div className={styles.summarySection}>
+                            <span className={styles.sectionLabel}>What should you do next?</span>
+                            <p className={styles.sectionContent}>{data.executive_summary.what_next}</p>
+                        </div>
+                    )}
+
+                    {data.recommended_automation_type && (
+                        <div className={styles.automationType}>
+                            <span className={styles.typeLabel}>Recommended Approach:</span>
+                            <span className={styles.typeValue}>{data.recommended_automation_type}</span>
+                        </div>
+                    )}
+                </div>
+            )}
+
             {/* Metrics Grid */}
             <div className={styles.metrics}>
                 <div className={styles.metric}>

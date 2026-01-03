@@ -39,6 +39,77 @@
     color: var(--danger);
 }
 
+/* Executive Summary */
+.executiveSummary {
+    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background: var(--surface-accent, rgba(59, 130, 246, 0.05));
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-lg);
+}
+
+.executiveSummary h3 {
+    font-size: 1rem;
+    margin-bottom: var(--spacing-md);
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+}
+
+.summarySection {
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-light, rgba(0, 0, 0, 0.06));
+}
+
+.summarySection:last-of-type {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.sectionLabel {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: var(--spacing-xs);
+}
+
+.sectionContent {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+}
+
+.automationType {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-light, rgba(0, 0, 0, 0.06));
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.typeLabel {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.typeValue {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--bg-secondary);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+}
+
 /* Metrics Grid */
 .metrics {
     display: grid;
