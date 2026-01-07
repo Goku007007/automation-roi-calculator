@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { calculateROIClient } from '../../utils/api';
+import { ChevronDownIcon, ChevronUpIcon } from '../ui/Icons';
 import styles from './WhatIfSliders.module.css';
 
 // Format currency
@@ -116,8 +117,11 @@ export default function WhatIfSliders({ formData, originalResults }) {
                 className={styles.toggleBtn}
                 onClick={() => setIsExpanded(!isExpanded)}
                 type="button"
+                aria-expanded={isExpanded}
             >
-                <span className={styles.toggleIcon}>{isExpanded ? '−' : '+'}</span>
+                <span className={styles.toggleIcon}>
+                    {isExpanded ? <ChevronUpIcon size={16} /> : <ChevronDownIcon size={16} />}
+                </span>
                 What-If Analysis
                 {hasChanges && <span className={styles.changedBadge}>Modified</span>}
             </button>
