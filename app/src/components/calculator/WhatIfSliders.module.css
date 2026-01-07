@@ -25,6 +25,14 @@
     background: var(--bg-tertiary);
 }
 
+.heading {
+    margin: 0;
+    font-family: 'IBM Plex Serif', Georgia, serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
 .toggleIcon {
     display: flex;
     align-items: center;

@@ -122,7 +122,7 @@ export default function WhatIfSliders({ formData, originalResults }) {
                 <span className={styles.toggleIcon}>
                     {isExpanded ? <ChevronUpIcon size={16} /> : <ChevronDownIcon size={16} />}
                 </span>
-                What-If Analysis
+                <h3 className={styles.heading}>What-If Analysis</h3>
                 {hasChanges && <span className={styles.changedBadge}>Modified</span>}
             </button>
 
