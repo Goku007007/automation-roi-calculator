@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
+import { ToastProvider } from './context/ToastContext';
 import Header from './components/layout/Header';
 import Home from './pages/Home';
 import Calculator from './pages/Calculator';
@@ -53,9 +54,11 @@ function AppContent() {
 function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
-        <AppContent />
-      </BrowserRouter>
+      <ToastProvider>
+        <BrowserRouter>
+          <AppContent />
+        </BrowserRouter>
+      </ToastProvider>
     </ThemeProvider>
   );
 }

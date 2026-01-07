@@ -9,6 +9,7 @@ import { ResultsSkeleton } from '../components/ui/Skeleton';
 import Button from '../components/ui/Button';
 import { XIcon, FolderIcon } from '../components/ui/Icons';
 import { useProjects } from '../hooks/useProjects';
+import { useToast } from '../context/ToastContext';
 import { calculateROI, generatePDF } from '../utils/api';
 import styles from './Calculator.module.css';
 
@@ -38,7 +39,8 @@ export default function Calculator() {
         worst: null,
     });
 
-    const { projects, saveProject, deleteProject, duplicateProject } = useProjects();
+    const { projects, saveProject, loadProject, deleteProject, duplicateProject } = useProjects();
+    const toast = useToast();
 
     // Handle template selection
     const handleSelectTemplate = (template) => {
@@ -85,14 +87,18 @@ export default function Calculator() {
 
     const handleSaveProject = async () => {
         if (!formData || !results) return;
-        await saveProject({
-            inputs: formData,
-            results,
-            scenarios: Object.fromEntries(
-                Object.entries(scenarios).filter(([_, v]) => v !== null)
-            ),
-        });
-        setShowProjects(true);
+        try {
+            await saveProject({
+                inputs: formData,
+                results,
+                scenarios: Object.fromEntries(
+                    Object.entries(scenarios).filter(([_, v]) => v !== null)
+                ),
+            });
+            toast.success('Project saved successfully!');
+        } catch (err) {
+            toast.error('Failed to save project');
+        }
     };
 
     const handleLoadProject = (project) => {
