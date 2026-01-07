@@ -33,6 +33,51 @@ function getBenchmarkStatus(metric, value) {
     return null;
 }
 
+// Generate CSV content from ROI data
+function generateCSV(data) {
+    const rows = [
+        ['Metric', 'Value'],
+        ['Process Name', data.process_name],
+        ['Priority Score', data.priority_score],
+        ['ROI Percentage', `${data.roi_percentage}%`],
+        ['Payback Period (months)', data.payback_period_months || data.payback_months || 0],
+        ['Annual Labor Cost', data.annual_labor_cost],
+        ['Net Annual Savings', data.net_annual_savings || data.annual_savings],
+        ['5-Year Savings', data.five_year_savings],
+        ['Implementation Cost', data.implementation_cost],
+        ['Recommendation', `"${data.recommendation}"`],
+    ];
+
+    // Add executive summary if available
+    if (data.executive_summary) {
+        if (data.executive_summary.is_worth_it) {
+            rows.push(['Worth Automating?', `"${data.executive_summary.is_worth_it}"`]);
+        }
+        if (data.executive_summary.why) {
+            rows.push(['Why?', `"${data.executive_summary.why}"`]);
+        }
+    }
+
+    if (data.recommended_automation_type) {
+        rows.push(['Recommended Approach', data.recommended_automation_type]);
+    }
+
+    return rows.map(row => row.join(',')).join('\n');
+}
+
+// Download helper function
+function downloadFile(content, filename, mimeType) {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
 export default function Results({ data, onDownloadPDF, isDownloading, branding, onBrandingChange }) {
     const [showMethodology, setShowMethodology] = useState(false);
     const [showBranding, setShowBranding] = useState(false);
@@ -244,6 +289,30 @@ export default function Results({ data, onDownloadPDF, isDownloading, branding, 
                     icon={<DownloadIcon size={16} />}
                 >
                     Download PDF Report
+                </Button>
+                <Button
+                    variant="secondary"
+                    size="md"
+                    onClick={() => {
+                        const csv = generateCSV(data);
+                        const filename = `ROI_${data.process_name.replace(/\s+/g, '_')}.csv`;
+                        downloadFile(csv, filename, 'text/csv');
+                    }}
+                    icon={<DownloadIcon size={16} />}
+                >
+                    Export CSV
+                </Button>
+                <Button
+                    variant="secondary"
+                    size="md"
+                    onClick={() => {
+                        const json = JSON.stringify(data, null, 2);
+                        const filename = `ROI_${data.process_name.replace(/\s+/g, '_')}.json`;
+                        downloadFile(json, filename, 'application/json');
+                    }}
+                    icon={<DownloadIcon size={16} />}
+                >
+                    Export JSON
                 </Button>
             </div>
         </div>
