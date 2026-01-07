@@ -168,3 +168,65 @@ export async function submitContactForm(formData, recaptchaToken) {
 
     return response.json();
 }
+
+// =============================================================================
+// PROJECT API FUNCTIONS
+// =============================================================================
+
+export async function getProjects() {
+    try {
+        const response = await fetch(`${API_URL}/projects`);
+        if (response.ok) {
+            return await response.json();
+        }
+    } catch {
+        // Backend unavailable
+    }
+    return null; // Signals to use localStorage fallback
+}
+
+export async function saveProjectAPI(project) {
+    try {
+        const response = await fetch(`${API_URL}/projects`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(project),
+        });
+        if (response.ok) {
+            return await response.json();
+        }
+    } catch {
+        // Backend unavailable
+    }
+    return null;
+}
+
+export async function updateProjectAPI(id, updates) {
+    try {
+        const response = await fetch(`${API_URL}/projects/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updates),
+        });
+        if (response.ok) {
+            return await response.json();
+        }
+    } catch {
+        // Backend unavailable
+    }
+    return null;
+}
+
+export async function deleteProjectAPI(id) {
+    try {
+        const response = await fetch(`${API_URL}/projects/${id}`, {
+            method: 'DELETE',
+        });
+        if (response.ok) {
+            return await response.json();
+        }
+    } catch {
+        // Backend unavailable
+    }
+    return null;
+}

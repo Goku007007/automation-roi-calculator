@@ -22,6 +22,8 @@ from slowapi.errors import RateLimitExceeded
 from models import ROIInput, ROIOutput, PDFRequest
 from calculator import calculate_roi
 from pdf_generator import generate_pdf_report
+from database import init_db, get_db_session
+from project_models import Project
 
 # Configuration
 REQUIRE_AUTH = os.getenv("REQUIRE_AUTH", "false").lower() == "true"
@@ -58,6 +60,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Initialize database on startup
+@app.on_event("startup")
+def startup_event():
+    init_db()
+
 
 # =============================================================================
 # CONTACT FORM MODEL
@@ -70,6 +77,14 @@ class ContactFormInput(BaseModel):
     employees: Optional[str] = None
     message: str
     recaptcha_token: Optional[str] = None
+
+
+class ProjectInput(BaseModel):
+    """Input for creating/updating a project."""
+    name: str
+    inputs: dict = {}
+    results: dict = {}
+    scenarios: dict = {}
 
 
 # =============================================================================
@@ -213,6 +228,89 @@ def generate_pdf(request: Request, inputs: PDFRequest):
         )
         return Response(content=pdf_bytes, media_type="application/pdf")
     except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# =============================================================================
+# PROJECT CRUD ENDPOINTS
+# =============================================================================
+
+@app.get("/projects")
+def list_projects(db=Depends(get_db_session)):
+    """List all saved projects."""
+    try:
+        projects = db.query(Project).order_by(Project.updated.desc()).all()
+        return [p.to_dict() for p in projects]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/projects")
+def create_project(project: ProjectInput, db=Depends(get_db_session)):
+    """Create a new project."""
+    try:
+        db_project = Project(
+            name=project.name,
+            inputs=project.inputs,
+            results=project.results,
+            scenarios=project.scenarios or {"base": {"inputs": project.inputs, "results": project.results}}
+        )
+        db.add(db_project)
+        db.commit()
+        db.refresh(db_project)
+        return db_project.to_dict()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/projects/{project_id}")
+def get_project(project_id: str, db=Depends(get_db_session)):
+    """Get a single project by ID."""
+    project = db.query(Project).filter(Project.id == project_id).first()
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return project.to_dict()
+
+
+@app.put("/projects/{project_id}")
+def update_project(project_id: str, updates: ProjectInput, db=Depends(get_db_session)):
+    """Update an existing project."""
+    try:
+        project = db.query(Project).filter(Project.id == project_id).first()
+        if not project:
+            raise HTTPException(status_code=404, detail="Project not found")
+        
+        project.name = updates.name
+        project.inputs = updates.inputs
+        project.results = updates.results
+        project.scenarios = updates.scenarios
+        
+        db.commit()
+        db.refresh(project)
+        return project.to_dict()
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.delete("/projects/{project_id}")
+def delete_project(project_id: str, db=Depends(get_db_session)):
+    """Delete a project."""
+    try:
+        project = db.query(Project).filter(Project.id == project_id).first()
+        if not project:
+            raise HTTPException(status_code=404, detail="Project not found")
+        
+        db.delete(project)
+        db.commit()
+        return {"success": True, "message": "Project deleted"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
 

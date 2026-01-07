@@ -1,84 +1,173 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import {
+    getProjects,
+    saveProjectAPI,
+    updateProjectAPI,
+    deleteProjectAPI
+} from '../utils/api';
 
 const STORAGE_KEY = 'roi-projects';
 
 export function useProjects() {
     const [projects, setProjects] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [useBackend, setUseBackend] = useState(true);
 
-    // Load projects from LocalStorage on mount
+    // Load projects on mount - try backend first, fall back to localStorage
     useEffect(() => {
-        try {
-            const stored = localStorage.getItem(STORAGE_KEY);
-            if (stored) {
-                setProjects(JSON.parse(stored));
+        async function loadProjects() {
+            setIsLoading(true);
+
+            // Try backend first
+            const backendProjects = await getProjects();
+            if (backendProjects !== null) {
+                setProjects(backendProjects);
+                setUseBackend(true);
+                setIsLoading(false);
+                return;
             }
-        } catch (err) {
-            console.error('Failed to load projects:', err);
+
+            // Fall back to localStorage
+            setUseBackend(false);
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    setProjects(JSON.parse(stored));
+                }
+            } catch (err) {
+                console.error('Failed to load projects from localStorage:', err);
+            }
+            setIsLoading(false);
         }
+
+        loadProjects();
     }, []);
 
-    // Save projects to LocalStorage when they change
+    // Save to localStorage as backup cache
     useEffect(() => {
-        try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
-        } catch (err) {
-            console.error('Failed to save projects:', err);
+        if (!isLoading) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+            } catch (err) {
+                console.error('Failed to cache projects to localStorage:', err);
+            }
         }
-    }, [projects]);
+    }, [projects, isLoading]);
 
-    const saveProject = (project) => {
+    const saveProject = useCallback(async (project) => {
+        const projectData = {
+            name: project.inputs.process_name || 'Untitled Project',
+            inputs: project.inputs,
+            results: project.results,
+            scenarios: { base: { inputs: project.inputs, results: project.results } },
+        };
+
+        // Try backend first
+        if (useBackend) {
+            const saved = await saveProjectAPI(projectData);
+            if (saved) {
+                setProjects(prev => [saved, ...prev]);
+                return saved.id;
+            }
+        }
+
+        // Fall back to local-only save
         const id = crypto.randomUUID();
         const newProject = {
             id,
-            name: project.inputs.process_name || 'Untitled Project',
+            ...projectData,
             created: new Date().toISOString(),
             updated: new Date().toISOString(),
-            inputs: project.inputs,
-            results: project.results,
-            scenarios: {
-                base: { inputs: project.inputs, results: project.results },
-            },
         };
         setProjects(prev => [newProject, ...prev]);
         return id;
-    };
+    }, [useBackend]);
 
-    const updateProject = (id, updates) => {
+    const updateProject = useCallback(async (id, updates) => {
+        // Find current project to merge updates
+        const current = projects.find(p => p.id === id);
+        if (!current) return;
+
+        const merged = {
+            name: updates.name ?? current.name,
+            inputs: updates.inputs ?? current.inputs,
+            results: updates.results ?? current.results,
+            scenarios: updates.scenarios ?? current.scenarios,
+        };
+
+        // Try backend first
+        if (useBackend) {
+            const updated = await updateProjectAPI(id, merged);
+            if (updated) {
+                setProjects(prev => prev.map(p => p.id === id ? updated : p));
+                return;
+            }
+        }
+
+        // Fall back to local-only update
         setProjects(prev =>
             prev.map(p =>
                 p.id === id
-                    ? { ...p, ...updates, updated: new Date().toISOString() }
+                    ? { ...p, ...merged, updated: new Date().toISOString() }
                     : p
             )
         );
-    };
+    }, [useBackend, projects]);
 
-    const deleteProject = (id) => {
+    const deleteProject = useCallback(async (id) => {
+        // Try backend first
+        if (useBackend) {
+            const result = await deleteProjectAPI(id);
+            if (result) {
+                setProjects(prev => prev.filter(p => p.id !== id));
+                return;
+            }
+        }
+
+        // Fall back to local-only delete
         setProjects(prev => prev.filter(p => p.id !== id));
-    };
+    }, [useBackend]);
 
-    const duplicateProject = (id) => {
+    const duplicateProject = useCallback(async (id) => {
         const original = projects.find(p => p.id === id);
         if (!original) return null;
 
+        const duplicateData = {
+            name: `${original.name} (Copy)`,
+            inputs: original.inputs,
+            results: original.results,
+            scenarios: original.scenarios,
+        };
+
+        // Try backend first
+        if (useBackend) {
+            const saved = await saveProjectAPI(duplicateData);
+            if (saved) {
+                setProjects(prev => [saved, ...prev]);
+                return saved.id;
+            }
+        }
+
+        // Fall back to local-only duplicate
         const newId = crypto.randomUUID();
         const duplicate = {
-            ...original,
             id: newId,
-            name: `${original.name} (Copy)`,
+            ...duplicateData,
             created: new Date().toISOString(),
             updated: new Date().toISOString(),
         };
         setProjects(prev => [duplicate, ...prev]);
         return newId;
-    };
+    }, [useBackend, projects]);
 
-    const getProject = (id) => {
+    const getProject = useCallback((id) => {
         return projects.find(p => p.id === id) || null;
-    };
+    }, [projects]);
 
     return {
         projects,
+        isLoading,
+        useBackend,
         saveProject,
         updateProject,
         deleteProject,

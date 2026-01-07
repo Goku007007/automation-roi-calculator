@@ -83,9 +83,9 @@ export default function Calculator() {
         }
     };
 
-    const handleSaveProject = () => {
+    const handleSaveProject = async () => {
         if (!formData || !results) return;
-        saveProject({
+        await saveProject({
             inputs: formData,
             results,
             scenarios: Object.fromEntries(
