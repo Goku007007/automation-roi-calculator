@@ -72,8 +72,8 @@ export async function calculateROI(data) {
         if (response.ok) {
             return response.json();
         }
-    } catch (err) {
-        console.log('Backend unavailable, using client-side calculation');
+    } catch {
+        // Backend unavailable, fall back to client-side calculation
     }
 
     // Fallback to client-side
@@ -81,7 +81,6 @@ export async function calculateROI(data) {
 }
 
 export async function generatePDF(data) {
-    console.log('generatePDF called with:', data);
 
     // Validate required fields
     if (!data || !data.process_name || !data.runs_per_period) {
@@ -115,8 +114,7 @@ export async function generatePDF(data) {
         annual_maintenance_cost: parseFloat(data.annual_maintenance_cost) || 0,
     };
 
-    console.log('Sending to API:', fullData);
-    console.log('API URL:', `${API_URL}/generate-pdf`);
+
 
     try {
         const response = await fetch(`${API_URL}/generate-pdf`, {
@@ -125,7 +123,7 @@ export async function generatePDF(data) {
             body: JSON.stringify(fullData),
         });
 
-        console.log('Response status:', response.status);
+
 
         if (!response.ok) {
             const error = await response.text();
