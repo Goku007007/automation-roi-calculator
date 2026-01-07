@@ -8,6 +8,7 @@ import Playground from './pages/Playground';
 import Docs from './pages/Docs';
 import Business from './pages/Business';
 import Marketplace from './pages/Marketplace';
+import Compare from './pages/Compare';
 import NotFound from './pages/NotFound';
 import './styles/global.css';
 
@@ -40,6 +41,7 @@ function AppContent() {
           <Route path="/playground" element={<Playground />} />
           <Route path="/docs" element={<Docs />} />
           <Route path="/marketplace" element={<Marketplace />} />
+          <Route path="/compare" element={<Compare />} />
           <Route path="/business" element={<Business />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
