@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Spinner from '../ui/Spinner';
 import Button from '../ui/Button';
 import { DownloadIcon } from '../ui/Icons';
+import WhatIfSliders from './WhatIfSliders';
 import styles from './Results.module.css';
 
 function formatCurrency(value) {
@@ -78,7 +79,7 @@ function downloadFile(content, filename, mimeType) {
     URL.revokeObjectURL(url);
 }
 
-export default function Results({ data, onDownloadPDF, isDownloading, branding, onBrandingChange }) {
+export default function Results({ data, formData, onDownloadPDF, isDownloading, branding, onBrandingChange }) {
     const [showMethodology, setShowMethodology] = useState(false);
     const [showBranding, setShowBranding] = useState(false);
 
@@ -276,6 +277,11 @@ export default function Results({ data, onDownloadPDF, isDownloading, branding, 
                         </div>
                     )}
                 </>
+            )}
+
+            {/* What-If Sliders */}
+            {formData && (
+                <WhatIfSliders formData={formData} originalResults={data} />
             )}
 
             {/* Actions */}

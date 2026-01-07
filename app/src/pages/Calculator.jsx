@@ -228,6 +228,7 @@ export default function Calculator() {
                             <>
                                 <Results
                                     data={results}
+                                    formData={formData}
                                     onDownloadPDF={handleDownloadPDF}
                                     isDownloading={isDownloading}
                                     branding={pdfBranding}
