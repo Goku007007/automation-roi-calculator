@@ -2,8 +2,7 @@
     margin-top: var(--spacing-lg);
     background: var(--bg-secondary);
     border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
+    border-radius: var(--radius-md);
 }
 
 .toggleBtn {
@@ -11,15 +10,15 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    padding: var(--spacing-md) var(--spacing-lg);
+    padding: var(--spacing-md);
     background: transparent;
     border: none;
     color: var(--text-primary);
-    font-family: inherit;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.875rem;
     cursor: pointer;
     transition: background var(--transition-fast);
+    text-align: left;
 }
 
 .toggleBtn:hover {
@@ -27,16 +26,15 @@
 }
 
 .toggleIcon {
-    width: 20px;
-    height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--primary);
-    color: white;
-    border-radius: var(--radius-sm);
-    font-size: 1rem;
-    line-height: 1;
+    color: var(--text-muted);
+    transition: transform var(--transition-fast);
+}
+
+.toggleIcon.expanded {
+    transform: rotate(180deg);
 }
 
 .changedBadge {
@@ -44,26 +42,27 @@
     padding: 2px 8px;
     background: var(--warning);
     color: white;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 500;
     border-radius: var(--radius-sm);
 }
 
 .content {
-    padding: var(--spacing-lg);
+    padding: var(--spacing-md);
     border-top: 1px solid var(--border);
 }
 
 .description {
-    margin: 0 0 var(--spacing-lg);
+    margin: 0 0 var(--spacing-md);
     color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
 }
 
 /* Sliders */
 .sliders {
     display: grid;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-md);
 }
 
 .sliderGroup {
@@ -80,30 +79,32 @@
 
 .sliderHeader label {
     font-weight: 500;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
+    color: var(--text-primary);
 }
 
 .sliderValue {
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.875rem;
     font-variant-numeric: tabular-nums;
     padding: 2px 8px;
     background: var(--bg-tertiary);
     border-radius: var(--radius-sm);
+    color: var(--text-primary);
 }
 
 .sliderValue.changed {
-    background: var(--primary);
+    background: var(--accent);
     color: white;
 }
 
 .slider {
     width: 100%;
-    height: 8px;
+    height: 6px;
     -webkit-appearance: none;
     appearance: none;
     background: var(--bg-tertiary);
-    border-radius: 4px;
+    border-radius: 3px;
     outline: none;
     cursor: pointer;
 }
@@ -111,13 +112,13 @@
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 20px;
-    height: 20px;
-    background: var(--primary);
+    width: 16px;
+    height: 16px;
+    background: var(--accent);
     border-radius: 50%;
     cursor: pointer;
     border: 2px solid white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     transition: transform var(--transition-fast);
 }
 
@@ -126,65 +127,72 @@
 }
 
 .slider::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    background: var(--primary);
+    width: 16px;
+    height: 16px;
+    background: var(--accent);
     border-radius: 50%;
     cursor: pointer;
     border: 2px solid white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .sliderRange {
     display: flex;
     justify-content: space-between;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--text-muted);
 }
 
 /* Preview */
 .preview {
-    margin-top: var(--spacing-xl);
-    padding: var(--spacing-lg);
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md);
     background: var(--bg-tertiary);
     border-radius: var(--radius-md);
 }
 
 .preview h4 {
-    margin: 0 0 var(--spacing-md);
-    font-size: 0.9rem;
-    color: var(--text-secondary);
+    margin: 0 0 var(--spacing-sm);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-weight: 600;
 }
 
 .previewMetrics {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--spacing-md);
+    gap: var(--spacing-sm);
 }
 
 .previewMetric {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    text-align: center;
 }
 
 .previewLabel {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
 }
 
 .previewValue {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: 700;
     color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
 }
 
 .diff {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     font-weight: 600;
     padding: 2px 6px;
     border-radius: var(--radius-sm);
+    margin-top: 2px;
 }
 
 .diff.positive {
@@ -199,14 +207,13 @@
 
 /* Reset Button */
 .resetBtn {
-    margin-top: var(--spacing-lg);
-    padding: var(--spacing-sm) var(--spacing-md);
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-xs) var(--spacing-sm);
     background: transparent;
     border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    color: var(--text-secondary);
-    font-family: inherit;
-    font-size: 0.875rem;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-size: 0.75rem;
     cursor: pointer;
     transition: all var(--transition-fast);
 }
@@ -221,13 +228,13 @@
 @media (max-width: 768px) {
     .previewMetrics {
         grid-template-columns: 1fr;
-        gap: var(--spacing-sm);
+        gap: var(--spacing-xs);
     }
 
     .previewMetric {
         flex-direction: row;
         justify-content: space-between;
-        padding: var(--spacing-sm);
+        padding: var(--spacing-xs);
         background: var(--bg-secondary);
         border-radius: var(--radius-sm);
     }
