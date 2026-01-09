@@ -56,6 +56,12 @@ export default function Header() {
                         Calculator
                     </NavLink>
                     <NavLink
+                        to="/portfolio"
+                        className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink}
+                    >
+                        Portfolio
+                    </NavLink>
+                    <NavLink
                         to="/playground"
                         className={({ isActive }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink}
                     >
@@ -139,6 +145,18 @@ export default function Header() {
                         <line x1="14" y1="18" x2="16" y2="18"></line>
                     </svg>
                     Calculator
+                </NavLink>
+                <NavLink
+                    to="/portfolio"
+                    className={({ isActive }) => isActive ? `${styles.mobileNavLink} ${styles.active}` : styles.mobileNavLink}
+                >
+                    <svg className={styles.mobileNavIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                    </svg>
+                    Portfolio
                 </NavLink>
                 <NavLink
                     to="/playground"

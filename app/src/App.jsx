@@ -6,6 +6,7 @@ import Header from './components/layout/Header';
 import Home from './pages/Home';
 import Calculator from './pages/Calculator';
 import Playground from './pages/Playground';
+import Portfolio from './pages/Portfolio';
 import Docs from './pages/Docs';
 import Business from './pages/Business';
 import Marketplace from './pages/Marketplace';
@@ -39,6 +40,7 @@ function AppContent() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/calculator" element={<Calculator />} />
+          <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/playground" element={<Playground />} />
           <Route path="/docs" element={<Docs />} />
           <Route path="/marketplace" element={<Marketplace />} />
