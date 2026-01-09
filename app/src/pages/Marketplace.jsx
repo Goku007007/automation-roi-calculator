@@ -1,115 +1,83 @@
-import { Link } from 'react-router-dom';
-import {
-    ShoppingCartIcon, UploadIcon, StarIcon, TagIcon, ShieldCheckIcon,
-    DollarIcon, TrendingUpIcon, UsersIcon, ChartBarIcon, LinkIcon
-} from '../components/ui/Icons';
+import { useNavigate } from 'react-router-dom';
+import * as Icons from '../components/ui/Icons';
 import Button from '../components/ui/Button';
+import { TEMPLATES } from '../data/templates';
 import styles from './Marketplace.module.css';
 
 export default function Marketplace() {
+    const navigate = useNavigate();
+
+    const handleUseTemplate = (template) => {
+        // Navigate to calculator and pre-fill data via location state
+        navigate('/calculator', {
+            state: {
+                loadProject: {
+                    id: template.id,
+                    defaults: template.defaults,
+                    // Flag to tell Calculator this is a template, not a saved project
+                    isTemplate: true
+                }
+            }
+        });
+    };
+
     return (
         <div className={styles.page}>
-            {/* Hero */}
-            <section className={styles.hero}>
-                <div className={styles.badge}>Coming Soon</div>
-                <h1 className={styles.title}>
-                    Automation Template<br />
-                    <span className={styles.accent}>Marketplace</span>
-                </h1>
-                <p className={styles.subtitle}>
-                    Buy ready-to-use automation workflows or sell your own templates
-                    to thousands of automation builders.
-                </p>
-            </section>
-
-            {/* How It Works */}
-            <section className={styles.howItWorks}>
-                <h2>How It Works</h2>
-                <div className={styles.cards}>
-                    <div className={styles.card}>
-                        <div className={styles.cardIcon}>
-                            <ShoppingCartIcon size={28} />
-                        </div>
-                        <h3>Buy Templates</h3>
-                        <p>
-                            Browse verified automation workflows for invoice processing,
-                            lead routing, onboarding, and more. Deploy in minutes.
-                        </p>
-                        <ul className={styles.features}>
-                            <li><StarIcon size={14} /> Verified by community</li>
-                            <li><ShieldCheckIcon size={14} /> Tested and documented</li>
-                            <li><TagIcon size={14} /> Transparent pricing</li>
-                        </ul>
-                    </div>
-
-                    <div className={styles.card}>
-                        <div className={styles.cardIcon}>
-                            <UploadIcon size={28} />
-                        </div>
-                        <h3>Sell Templates</h3>
-                        <p>
-                            Monetize your automation expertise. Package your workflows
-                            as templates and earn passive income from every sale.
-                        </p>
-                        <ul className={styles.features}>
-                            <li><StarIcon size={14} /> Keep 80% of revenue</li>
-                            <li><ShieldCheckIcon size={14} /> Built-in licensing</li>
-                            <li><TagIcon size={14} /> Analytics dashboard</li>
-                        </ul>
-                    </div>
+            <div className={styles.container}>
+                {/* Header */}
+                <div className={styles.header}>
+                    <span className={styles.badge}>Template Library</span>
+                    <h1 className={styles.title}>Automation Marketplace</h1>
+                    <p className={styles.subtitle}>
+                        Browse verified automation workflows, pre-configured with industry benchmarks.
+                        Select a template to instantly start your ROI calculation.
+                    </p>
                 </div>
-            </section>
 
-            {/* Categories Preview */}
-            <section className={styles.categories}>
-                <h2>Template Categories</h2>
-                <div className={styles.categoryGrid}>
-                    <div className={styles.categoryCard}>
-                        <DollarIcon size={20} className={styles.categoryIcon} />
-                        <span>Finance & Accounting</span>
-                    </div>
-                    <div className={styles.categoryCard}>
-                        <TrendingUpIcon size={20} className={styles.categoryIcon} />
-                        <span>Sales & CRM</span>
-                    </div>
-                    <div className={styles.categoryCard}>
-                        <UsersIcon size={20} className={styles.categoryIcon} />
-                        <span>HR & Onboarding</span>
-                    </div>
-                    <div className={styles.categoryCard}>
-                        <ShoppingCartIcon size={20} className={styles.categoryIcon} />
-                        <span>E-commerce</span>
-                    </div>
-                    <div className={styles.categoryCard}>
-                        <ChartBarIcon size={20} className={styles.categoryIcon} />
-                        <span>Reporting & Analytics</span>
-                    </div>
-                    <div className={styles.categoryCard}>
-                        <LinkIcon size={20} className={styles.categoryIcon} />
-                        <span>API & Integrations</span>
-                    </div>
-                </div>
-            </section>
+                {/* Grid */}
+                <div className={styles.grid}>
+                    {TEMPLATES.map(template => {
+                        // Dynamically resolve icon, fallback to FolderIcon
+                        const IconComponent = Icons[template.icon] || Icons.FolderIcon;
 
-            {/* Waitlist CTA */}
-            <section className={styles.waitlist}>
-                <h2>Be the First to Know</h2>
-                <p>
-                    Join the waitlist to get early access when the Marketplace launches.
-                </p>
-                <div className={styles.waitlistForm}>
-                    <input
-                        type="email"
-                        placeholder="Enter your email"
-                        className={styles.emailInput}
-                        disabled
-                    />
-                    <Button variant="primary" disabled>
-                        Join Waitlist
-                    </Button>
+                        return (
+                            <div key={template.id} className={styles.card}>
+                                <div className={styles.cardHeader}>
+                                    <div className={styles.iconWrapper}>
+                                        <IconComponent size={24} />
+                                    </div>
+                                    <span className={styles.category}>{template.category}</span>
+                                </div>
+
+                                <h3 className={styles.cardTitle}>{template.name}</h3>
+                                <p className={styles.description}>{template.description}</p>
+
+                                <div className={styles.metrics}>
+                                    <div className={styles.metric}>
+                                        <span className={styles.metricValue}>{template.benchmarks.timeReduction}</span>
+                                        <span className={styles.metricLabel}>Time Savings</span>
+                                    </div>
+                                    <div className={styles.metric}>
+                                        <span className={styles.metricValue}>{template.benchmarks.typicalPayback}</span>
+                                        <span className={styles.metricLabel}>Payback</span>
+                                    </div>
+                                </div>
+
+                                <div className={styles.footer}>
+                                    <Button
+                                        variant="primary"
+                                        fullWidth
+                                        onClick={() => handleUseTemplate(template)}
+                                        icon={<Icons.ArrowRightIcon size={16} />}
+                                    >
+                                        Use Template
+                                    </Button>
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
-                <p className={styles.comingSoon}>Launching Q2 2025</p>
-            </section>
+            </div>
         </div>
     );
 }

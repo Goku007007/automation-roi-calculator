@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import CalculatorForm from '../components/calculator/CalculatorForm';
 import ProcessTemplates from '../components/calculator/ProcessTemplates';
 import Results from '../components/calculator/Results';
@@ -41,6 +42,33 @@ export default function Calculator() {
 
     const { projects, saveProject, loadProject, deleteProject, duplicateProject } = useProjects();
     const toast = useToast();
+    const location = useLocation();
+
+    // Check for incoming data from other pages (Portfolio, Marketplace)
+    useEffect(() => {
+        if (location.state?.loadProject) {
+            const incoming = location.state.loadProject;
+
+            // Check if it's a full project (has results) or just a template (defaults)
+            if (incoming.results) {
+                // Full project
+                handleLoadProject(incoming);
+            } else {
+                // Template / Defaults
+                setLoadedInputs(incoming);
+                setFormKey(prev => prev + 1);
+
+                // If it has a matching template ID, set it selected
+                if (incoming.id && incoming.defaults) {
+                    setSelectedTemplate(incoming.id);
+                    setLoadedInputs(incoming.defaults);
+                }
+            }
+
+            // Clear state to prevent reloading on simple refresh (optional, but good practice)
+            window.history.replaceState({}, document.title);
+        }
+    }, [location.state]);
 
     // Handle template selection
     const handleSelectTemplate = (template) => {
