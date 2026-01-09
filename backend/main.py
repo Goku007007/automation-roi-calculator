@@ -222,6 +222,7 @@ def generate_pdf(request: Request, inputs: PDFRequest):
         # Generate PDF with branding options
         pdf_bytes = generate_pdf_report(
             result,
+            input_data=inputs,
             company_name=inputs.company_name,
             brand_color=inputs.brand_color,
             logo_base64=inputs.logo_base64
