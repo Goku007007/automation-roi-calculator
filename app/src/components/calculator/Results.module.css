@@ -110,6 +110,29 @@
     border-radius: var(--radius-sm);
 }
 
+/* Cost of Inaction Warning */
+.inactionWarning {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid var(--warning);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.warningIcon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.inactionWarning strong {
+    color: var(--warning);
+}
+
 /* Metrics Grid */
 .metrics {
     display: grid;

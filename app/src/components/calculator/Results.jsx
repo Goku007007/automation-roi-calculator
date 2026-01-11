@@ -138,6 +138,15 @@ export default function Results({ data, formData, onDownloadPDF, isDownloading, 
                 </div>
             )}
 
+            {/* Cost of Inaction Warning */}
+            <div className={styles.inactionWarning}>
+                <span className={styles.warningIcon}>⚠️</span>
+                <div>
+                    <strong>Cost of doing nothing:</strong>{' '}
+                    You'll spend {formatCurrency(data.total_current_cost || data.annual_labor_cost)} every year on this process.
+                </div>
+            </div>
+
             {/* Metrics Grid */}
             <div className={styles.metrics}>
                 <div className={styles.metric}>
