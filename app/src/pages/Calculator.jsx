@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import CalculatorForm from '../components/calculator/CalculatorForm';
 import ProcessTemplates from '../components/calculator/ProcessTemplates';
@@ -24,6 +24,7 @@ export default function Calculator() {
     const [showProjects, setShowProjects] = useState(false);
     const [loadedInputs, setLoadedInputs] = useState(null);
     const [selectedTemplate, setSelectedTemplate] = useState(null);
+    const [pendingAutoCalc, setPendingAutoCalc] = useState(null);
 
     // PDF branding options
     const [pdfBranding, setPdfBranding] = useState({
@@ -62,13 +63,30 @@ export default function Calculator() {
                 if (incoming.id && incoming.defaults) {
                     setSelectedTemplate(incoming.id);
                     setLoadedInputs(incoming.defaults);
+
+                    // If autoCalculate flag is set, queue the auto-calculation
+                    if (incoming.autoCalculate) {
+                        setPendingAutoCalc(incoming.defaults);
+                    }
                 }
             }
 
-            // Clear state to prevent reloading on simple refresh (optional, but good practice)
+            // Clear state to prevent reloading on simple refresh
             window.history.replaceState({}, document.title);
         }
     }, [location.state]);
+
+    // Auto-calculate when pendingAutoCalc is set
+    useEffect(() => {
+        if (pendingAutoCalc) {
+            // Small delay to let form render first
+            const timer = setTimeout(() => {
+                handleSubmit(pendingAutoCalc);
+                setPendingAutoCalc(null);
+            }, 100);
+            return () => clearTimeout(timer);
+        }
+    }, [pendingAutoCalc]);
 
     // Handle template selection
     const handleSelectTemplate = (template) => {

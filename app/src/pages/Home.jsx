@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { SCENARIOS } from '../utils/scenarios';
+import { TEMPLATES } from '../data/templates';
 import ScenarioModule from '../components/home/ScenarioModule';
 import WhatIsAutomation from '../components/home/WhatIsAutomation';
 import HowItWorks from '../components/home/HowItWorks';
@@ -8,19 +9,35 @@ import ReportPreview from '../components/home/ReportPreview';
 import PlaygroundTeaser from '../components/home/PlaygroundTeaser';
 import Button from '../components/ui/Button';
 import {
-    ArrowRightIcon, BookOpenIcon,
+    ArrowRightIcon, BookOpenIcon, BoltIcon,
     CheckCircleIcon, ShieldCheckIcon, FileTextIcon
 } from '../components/ui/Icons';
 import styles from './Home.module.css';
 
 export default function Home() {
     const [activeScenario, setActiveScenario] = useState(0);
+    const navigate = useNavigate();
 
     const categories = [
         { id: 'invoice-approval', label: 'Finance' },
         { id: 'lead-routing', label: 'Sales' },
         { id: 'onboarding', label: 'HR' },
     ];
+
+    // Navigate to calculator with demo data and auto-calculate
+    const handleSeeExample = () => {
+        const demoTemplate = TEMPLATES[0]; // Invoice Processing - solid ROI example
+        navigate('/calculator', {
+            state: {
+                loadProject: {
+                    id: demoTemplate.id,
+                    defaults: demoTemplate.defaults,
+                    isTemplate: true,
+                    autoCalculate: true, // Signal to auto-submit
+                }
+            }
+        });
+    };
 
     return (
         <div className={styles.page}>
@@ -41,12 +58,10 @@ export default function Home() {
                             <ArrowRightIcon size={18} />
                         </Button>
                     </Link>
-                    <Link to="/docs">
-                        <Button variant="secondary" size="lg">
-                            <BookOpenIcon size={18} />
-                            <span>Explore Tool Costs</span>
-                        </Button>
-                    </Link>
+                    <Button variant="secondary" size="lg" onClick={handleSeeExample}>
+                        <BoltIcon size={18} />
+                        <span>See Example Results</span>
+                    </Button>
                 </div>
             </section>
 
