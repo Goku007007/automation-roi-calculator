@@ -1,3 +1,4 @@
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as Icons from '../components/ui/Icons';
 import Button from '../components/ui/Button';
@@ -6,6 +7,19 @@ import styles from './Marketplace.module.css';
 
 export default function Marketplace() {
     const navigate = useNavigate();
+    const [activeCategory, setActiveCategory] = useState('All');
+
+    // Extract unique categories
+    const categories = useMemo(() => {
+        const cats = ['All', ...new Set(TEMPLATES.map(t => t.category))];
+        return cats;
+    }, []);
+
+    // Filter templates by category
+    const filteredTemplates = useMemo(() => {
+        if (activeCategory === 'All') return TEMPLATES;
+        return TEMPLATES.filter(t => t.category === activeCategory);
+    }, [activeCategory]);
 
     const handleUseTemplate = (template) => {
         // Navigate to calculator and pre-fill data via location state
@@ -34,9 +48,22 @@ export default function Marketplace() {
                     </p>
                 </div>
 
+                {/* Category Filter */}
+                <div className={styles.filterBar}>
+                    {categories.map(cat => (
+                        <button
+                            key={cat}
+                            className={`${styles.filterBtn} ${activeCategory === cat ? styles.filterActive : ''}`}
+                            onClick={() => setActiveCategory(cat)}
+                        >
+                            {cat}
+                        </button>
+                    ))}
+                </div>
+
                 {/* Grid */}
                 <div className={styles.grid}>
-                    {TEMPLATES.map(template => {
+                    {filteredTemplates.map(template => {
                         // Dynamically resolve icon, fallback to FolderIcon
                         const IconComponent = Icons[template.icon] || Icons.FolderIcon;
 

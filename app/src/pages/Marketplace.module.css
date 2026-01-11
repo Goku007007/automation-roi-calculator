@@ -50,6 +50,43 @@
     gap: var(--spacing-lg);
 }
 
+/* Category Filter Bar */
+.filterBar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    justify-content: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.filterBtn {
+    padding: 8px 16px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.filterBtn:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--accent);
+    color: var(--text-primary);
+}
+
+.filterActive {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+}
+
+.filterActive:hover {
+    background: var(--accent-hover);
+}
+
 /* Card */
 .card {
     background: var(--bg-secondary);

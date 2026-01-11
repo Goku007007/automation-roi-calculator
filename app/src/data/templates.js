@@ -136,5 +136,135 @@ export const TEMPLATES = [
             errorReduction: '95%+',
             typicalPayback: '2-5 months',
         }
+    },
+    {
+        id: 'order-fulfillment',
+        name: 'Order Fulfillment',
+        icon: 'ShoppingCartIcon',
+        description: 'Automated order processing, inventory sync, and shipping label generation.',
+        category: 'E-commerce',
+        defaults: {
+            process_name: 'Order Fulfillment',
+            frequency: 'daily',
+            runs_per_period: 100,          // 100 orders/day
+            hours_per_run: 0.08,           // 5 mins per order manual
+            staff_count: 3,
+            hourly_rate: 20,
+            error_rate: 3,                 // 3-5% manual error rate
+            error_fix_cost: 25,            // Returns/reships
+            implementation_cost: 12000,
+            software_license_cost: 2400,
+            annual_maintenance_cost: 800,
+            expected_labor_reduction: 70,
+        },
+        benchmarks: {
+            timeReduction: '70%',
+            errorReduction: '95%+',
+            typicalPayback: '3-6 months',
+        }
+    },
+    {
+        id: 'it-service-ticketing',
+        name: 'IT Service Ticketing',
+        icon: 'WrenchIcon',
+        description: 'Automated ticket routing, password resets, and common issue resolution.',
+        category: 'IT',
+        defaults: {
+            process_name: 'IT Service Ticketing',
+            frequency: 'daily',
+            runs_per_period: 30,           // 30 tickets/day
+            hours_per_run: 0.25,           // 15 mins per ticket
+            staff_count: 2,
+            hourly_rate: 32,
+            error_rate: 5,
+            error_fix_cost: 40,
+            implementation_cost: 15000,
+            software_license_cost: 3600,
+            annual_maintenance_cost: 1500,
+            expected_labor_reduction: 60,
+        },
+        benchmarks: {
+            timeReduction: '60-80%',
+            errorReduction: '62%+ faster',
+            typicalPayback: '4-8 months',
+        }
+    },
+    {
+        id: 'healthcare-claims',
+        name: 'Claims Processing',
+        icon: 'ShieldCheckIcon',
+        description: 'Automated eligibility verification, claim submission, and status tracking.',
+        category: 'Healthcare',
+        defaults: {
+            process_name: 'Claims Processing',
+            frequency: 'daily',
+            runs_per_period: 40,           // 40 claims/day
+            hours_per_run: 0.5,            // 30 mins per claim
+            staff_count: 3,
+            hourly_rate: 28,
+            error_rate: 8,                 // Claim rejection rate
+            error_fix_cost: 75,
+            implementation_cost: 25000,
+            software_license_cost: 6000,
+            annual_maintenance_cost: 2500,
+            expected_labor_reduction: 50,
+        },
+        benchmarks: {
+            timeReduction: '44-53%',
+            errorReduction: '30%+',
+            typicalPayback: '6-12 months',
+        }
+    },
+    {
+        id: 'expense-reporting',
+        name: 'Expense Reporting',
+        icon: 'ReceiptIcon',
+        description: 'Automated receipt capture, policy validation, and approval workflows.',
+        category: 'Finance',
+        defaults: {
+            process_name: 'Expense Reporting',
+            frequency: 'weekly',
+            runs_per_period: 50,           // 50 reports/week
+            hours_per_run: 0.3,            // 18 mins per report
+            staff_count: 2,
+            hourly_rate: 30,
+            error_rate: 10,                // Policy violation rate
+            error_fix_cost: 35,
+            implementation_cost: 8000,
+            software_license_cost: 2400,
+            annual_maintenance_cost: 600,
+            expected_labor_reduction: 55,
+        },
+        benchmarks: {
+            timeReduction: '40-55%',
+            errorReduction: '30%+',
+            typicalPayback: '3-5 months',
+        }
+    },
+    {
+        id: 'contract-review',
+        name: 'Contract Review',
+        icon: 'FileTextIcon',
+        description: 'AI-powered contract analysis, risk identification, and approval routing.',
+        category: 'Legal',
+        defaults: {
+            process_name: 'Contract Review',
+            frequency: 'weekly',
+            runs_per_period: 10,           // 10 contracts/week
+            hours_per_run: 3,              // 3 hrs per contract review
+            staff_count: 1,
+            hourly_rate: 75,               // Legal rate
+            error_rate: 5,                 // Missed clauses
+            error_fix_cost: 500,           // Renegotiation cost
+            implementation_cost: 30000,    // AI tool licensing
+            software_license_cost: 12000,
+            annual_maintenance_cost: 3000,
+            expected_labor_reduction: 65,
+        },
+        benchmarks: {
+            timeReduction: '63-80%',
+            errorReduction: '45%+',
+            typicalPayback: '8-14 months',
+        }
     }
 ];
